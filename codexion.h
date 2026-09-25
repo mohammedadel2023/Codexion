@@ -1,18 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   codexion.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/25 23:11:51 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/09/25 23:12:03 by mkhashan         ###   ########.fr       */
+/*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
+/*   Updated: 2026/09/25 23:30:25 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "codexion.h"
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
+enum policy{
+	fifo, edf
+};
 
-int	main(int	argc, char	**argv){
-	
-}
+struct vars
+{
+	int	number_of_coders;
+	struct timespec	time_to_burnout;
+	struct timespec	time_to_compile;
+	struct timespec	time_to_debug;
+	struct timespec	time_to_refactor;
+	int	number_of_compiles_required;
+	struct timespec	dongle_cooldown;
+	enum policy	scheduler;
+};
