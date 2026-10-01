@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:11:51 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/09/26 14:03:46 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/01 10:37:56 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 
 int	main(int	argc, char	**argv){
-	struct vars	*v;
+	struct vars		*v;
+	struct timeval	t;
 
 	v = malloc(sizeof(*v));
 	if (!v)
@@ -24,8 +25,14 @@ int	main(int	argc, char	**argv){
 		printf("Parssing issue pls check it.\n");
 		return (0);
 	}
-	// printf("%i\n",v->number_of_coders);
-	// printf("%i\n",v->time_to_refactor);
-	// printf("%i\n",v->scheduler);
+	int x = gettimeofday(&t, NULL);
+	/*if (!x)
+	{
+		printf("the times is: %i\n", t.tv_usec);
+	}*/
+	thread_init(v);
+	//printf("%i\n",v->number_of_coders);
+	//printf("%i\n",v->time_to_refactor);
+	//printf("%i\n",v->scheduler);
 	return (0);
 }
