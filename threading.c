@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/01 14:02:21 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/01 15:59:54 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,16 @@ int	is_live(struct thread_state **th_s)
 	return (0);
 }
 
+
+struct vars *copy(struct vars *v)
+{
+	struct vars *new_v;
+
+	new_v = malloc(sizeof(struct vars));
+	*new_v = *v;
+	return new_v;
+}
+
 void	*thread_monitor(void *args)
 {
 	int	it;
@@ -62,11 +72,14 @@ void	*thread_monitor(void *args)
 	while (is_live(th_s))
 	{
 		it = 0;
-		while (th_s[it])
+		while (it < th_s[0]->v->number_of_coders)
 		{
 			if (gettimeofday(&t, NULL) == 0)
 			{
 				pthread_mutex_lock(&(th_s[it]->st_mutex));
+				//printf("the time_to_burnout %i \n", th_s[it]->v->time_to_burnout);
+				//printf("the start time %i \n", th_s[it]->st_time);
+				//printf("the t.tv_sec: %i \n", t.tv_sec);
 				if (t.tv_sec - th_s[it]->st_time >= th_s[it]->v->time_to_burnout)
 				{
 					th_s[it]->is_alive = 0;
@@ -94,7 +107,7 @@ int	thread_init(struct vars *vars)
 	struct timeval		*time;
 	
 	initiated_coder = 0;
-	printf("start initiate\n");
+	//printf("start initiate\n");
 	while (initiated_coder < vars->number_of_coders)
 	{
 		th_s[initiated_coder] = malloc(sizeof(struct thread_state));
@@ -105,7 +118,7 @@ int	thread_init(struct vars *vars)
 		{
 			return (2);
 		}
-		th_s[initiated_coder]->v = vars;
+		th_s[initiated_coder]->v = copy(vars);
 		th_s[initiated_coder]->st_time = time->tv_sec;
 		th_s[initiated_coder]->compilation_times = 0;
 		th_s[initiated_coder]->is_alive = 1;
@@ -122,7 +135,7 @@ int	thread_init(struct vars *vars)
 	initiated_coder = 0;
 	while (initiated_coder < vars->number_of_coders)
 	{
-		printf("start join coder %i\n", initiated_coder);
+		//printf("start join coder %i\n", initiated_coder);
 		pthread_join(ths[initiated_coder], NULL);
 		printf("join the %i thread\n", initiated_coder);
 		
