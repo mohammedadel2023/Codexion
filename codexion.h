@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/09/25 23:30:25 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/09/26 14:07:53 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 #include <string.h>
 
 enum policy{
-	fifo, edf
+	fifo = 1, edf = 2
 };
 
-struct vars
+typedef struct vars
 {
 	int	number_of_coders;
 	struct timespec	time_to_burnout;
@@ -29,4 +29,7 @@ struct vars
 	int	number_of_compiles_required;
 	struct timespec	dongle_cooldown;
 	enum policy	scheduler;
-};
+}	t_vars;
+
+
+int	parser(int argc, char **argv, struct vars *v);
