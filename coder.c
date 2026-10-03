@@ -1,32 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   coder.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/25 23:11:51 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/03 18:41:50 by mkhashan         ###   ########.fr       */
+/*   Created: 2026/10/03 18:07:04 by mkhashan          #+#    #+#             */
+/*   Updated: 2026/10/03 18:08:24 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-int	main(int argc, char **argv)
+void	*coder(void *args)
 {
-	t_vars			*v;
 	struct timeval	t;
+	t_tstate		*th_s;
 
-	v = malloc(sizeof(t_vars));
-	if (!v)
-		return (1);
-	if (!parser(argc, argv, v))
+	th_s = (t_tstate *)args;
+	while (th_s->is_alive != 0 && th_s->compilation_times
+		!= th_s->v->number_of_compiles_required)
 	{
-		printf("Parssing issue pls check it.\n");
-		free(v);
-		return (0);
+		sleep(1);
+		pthread_mutex_lock(&(th_s->st_mutex));
+		th_s->compilation_times++;
+		if (gettimeofday(&t, NULL) != 0)
+			return (NULL);
+		th_s->st_time = t.tv_sec;
+		pthread_mutex_unlock(&(th_s->st_mutex));
 	}
-	thread_init(v);
-	free_v(v);
-	return (0);
+	th_s->is_alive = -1;
+	printf("the %i coder stop\n", th_s->coder_num);
 }

@@ -1,32 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   queue_utlis.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/25 23:11:51 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/03 18:41:50 by mkhashan         ###   ########.fr       */
+/*   Created: 2026/10/03 17:13:38 by mkhashan          #+#    #+#             */
+/*   Updated: 2026/10/03 17:21:36 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-int	main(int argc, char **argv)
-{
-	t_vars			*v;
-	struct timeval	t;
 
-	v = malloc(sizeof(t_vars));
-	if (!v)
-		return (1);
-	if (!parser(argc, argv, v))
-	{
-		printf("Parssing issue pls check it.\n");
-		free(v);
-		return (0);
-	}
-	thread_init(v);
-	free_v(v);
-	return (0);
-}
