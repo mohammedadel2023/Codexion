@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:12:29 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/03 14:39:42 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/03 14:55:31 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ int	parser(int argc, char **argv, t_vars *v)
 	it = 1;
 	if (argc != 17)
 	{
-		printf("Args issue check your args");
+		printf("Args issue check your args\n");
 		return (0);
 	}
 	while (it < argc)
