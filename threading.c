@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/01 15:59:54 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/03 14:49:51 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 void	*coder(void *args)
 {
 	struct timeval t;
-	struct thread_state *th_s;
+	t_tstate *th_s;
 
-	th_s = (struct thread_state *)args;
+	th_s = (t_tstate *)args;
 	while (th_s->compilation_times != th_s->v->number_of_compiles_required &&
 			th_s->is_alive != 0)
 	{
@@ -31,19 +31,22 @@ void	*coder(void *args)
 			return (NULL);
 		th_s->st_time = t.tv_sec;
 		printf("the %i coder  run for the %i int time and the time start is:%i\n", th_s->coder_num, th_s->compilation_times, th_s->st_time);
+		//th_s->v->stoped_coder += 1;
 		pthread_mutex_unlock(&(th_s->st_mutex));
 		
 	}
-	free(th_s);
+	th_s->is_alive = 0;
+	printf("the %i coder stop\n", th_s->coder_num);
+	th_s;
 }
 
 
-int	is_live(struct thread_state **th_s)
+int	is_live(t_tstate **th_s)
 {
 	int	it;
 
 	it = 0;
-	while (th_s[it])
+	while (it < th_s[0]->v->number_of_coders)
 	{
 		if (th_s[it]->is_alive == 1)
 			return (1);
@@ -53,26 +56,44 @@ int	is_live(struct thread_state **th_s)
 }
 
 
-struct vars *copy(struct vars *v)
+struct vars *copy(t_vars *v)
 {
-	struct vars *new_v;
+	t_vars *new_v;
 
 	new_v = malloc(sizeof(struct vars));
 	*new_v = *v;
 	return new_v;
 }
 
+int	free_thread(t_tstate **th_s)
+{
+	int	it;
+
+	if (!th_s){
+		return (0);
+	}
+	it = th_s[0]->v->number_of_coders;
+	//free(th_s[0]->v->stoped_coder);
+	while (0 <= it - 1)
+	{
+		free(th_s[it - 1]->v);
+		free(th_s[it - 1]);
+		it--;
+	}
+	return (1);
+}
+
 void	*thread_monitor(void *args)
 {
 	int	it;
 	struct timeval	t;
-	struct thread_state **th_s;
+	t_tstate **th_s;
 
 	th_s = (struct thread_state **)args;
 	while (is_live(th_s))
 	{
 		it = 0;
-		while (it < th_s[0]->v->number_of_coders)
+		while (it < (th_s[0]->v->number_of_coders))
 		{
 			if (gettimeofday(&t, NULL) == 0)
 			{
@@ -94,16 +115,16 @@ void	*thread_monitor(void *args)
 			it++;
 		}
 	}
+	free_thread(th_s);
 	return (NULL);
 }
 
-int	thread_init(struct vars *vars)
+int	thread_init(t_vars *vars)
 {
 	int			initiated_coder;
 	pthread_t	ths[vars->number_of_coders];
 	pthread_t	monitor_th;
-	struct thread_state *th_s[vars->number_of_coders];
-	//struct thread_state *th_s;
+	t_tstate *th_s[vars->number_of_coders];
 	struct timeval		*time;
 	
 	initiated_coder = 0;
@@ -128,6 +149,7 @@ int	thread_init(struct vars *vars)
 			return (3);
 		printf("create the %i thread\n", initiated_coder);
 		initiated_coder++;
+		free(time);
 	}
 	if (pthread_create(&monitor_th, NULL, &thread_monitor, (void *)th_s) != 0)
 		return (5);

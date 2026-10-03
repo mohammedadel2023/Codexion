@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/01 13:35:05 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/03 14:39:31 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-enum policy{
+typedef enum policy{
 	fifo = 1, edf = 2
-};
+} e_policy;
 
 typedef struct vars
 {
@@ -30,6 +30,7 @@ typedef struct vars
 	time_t	time_to_refactor;
 	int	number_of_compiles_required;
 	time_t	dongle_cooldown;
+	//int		*stoped_coder;
 	enum policy	scheduler;
 }	t_vars;
 
@@ -41,8 +42,9 @@ typedef struct thread_state
 	int			is_alive;
 	int			coder_num;
 	pthread_mutex_t	st_mutex;
-	struct vars	*v;
+	t_vars	*v;
 }	t_tstate;
 
-int	parser(int argc, char **argv, struct vars *v);
-int	thread_init(struct vars *vars);
+int	parser(int argc, char **argv, t_vars *v);
+int	thread_init(t_vars *vars);
+void    free_v(t_vars *v);

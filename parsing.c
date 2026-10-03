@@ -6,19 +6,57 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:12:29 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/01 13:33:22 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/03 14:39:42 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-int	*num_val(char	*str)
-{
-	int	*res;
 
-	res = malloc(sizeof(int));
-	if (!res)
-		return (NULL);
+time_t get_time_val(char *str)
+{
+	long	val;
+
+	if (!str)
+		return (-1);
+	val = atoi(str);
+	if (val < 0)
+		return (-1);
+	return ((time_t) val);
+}
+
+int	get_number_val(char *str)
+{
+	int	num;
+
+	if (!str)
+		return (-1);
+	num = atoi(str);
+	if (num < 0)
+		return (-1);
+	return (num);
+}
+
+e_policy get_policy_val(char *str)
+{
+	if (!str)
+		return (0);
+	if (strcmp(str, "fifo") == 0)
+	{
+		return (fifo);
+	}
+	else if (strcmp(str, "edf") == 0)
+	{
+		return (edf);
+	}
+	else
+	{
+		return (-1);
+	}	
+}
+
+/*void	*num_val(char	*str, int	*res)
+{
 	*res = atoi(str);
 	if (*res <= 0)
 		return (NULL);
@@ -29,16 +67,33 @@ void	*check_val(char	*str, char	*type)
 {
 	void	*res;
 
+	if (strcmp(type, "policy") == 0)
+	{
+		if (strcmp(str, "fifo") == 0)
+		{
+			// res = malloc(sizeof(enum policy));
+			*(enum policy *)res = fifo;
+			return (res);
+		}
+		else if (strcmp(str, "edf") == 0)
+		{
+			// res = malloc(sizeof(enum policy));
+			*(enum policy *)res = edf;
+			return (res);
+		}
+		return (NULL);
+	}
+
 	if (strcmp(type, "num") == 0)
 	{
-		res = (void *)num_val(str);
+		res = (void *)num_val(str, (int *)res);
 		if (!res)
 			return (NULL);
 		return (res);
 	}
 	else if (strcmp(type, "time") == 0)
 	{
-		res = (void *)num_val(str);
+		res = (void *)num_val(str, (int *)res);
 		if (!res)
 			return (NULL);
 		return (res);
@@ -47,7 +102,7 @@ void	*check_val(char	*str, char	*type)
 	{
 		if (strcmp(str, "fifo") == 0)
 		{
-			res = malloc(sizeof(enum policy));
+			// res = malloc(sizeof(enum policy));
 			*(enum policy *)res = fifo;
 			return (res);
 		}
@@ -60,12 +115,13 @@ void	*check_val(char	*str, char	*type)
 		return (NULL);
 	}
 	return (NULL);
-}
+}*/
 
-int	parser(int argc, char **argv, struct vars *v)
+int	parser(int argc, char **argv, t_vars *v)
 {
-	int			it;
-	char		*str;
+	int		it;
+	char	*str;
+	int		*stoped_c;
 
 	it = 1;
 	if (argc != 17)
@@ -78,30 +134,30 @@ int	parser(int argc, char **argv, struct vars *v)
 		// printf("done --%s--\n", argv[it]);
 		str = argv[it + 1];
 		if (strcmp(argv[it], "number_of_coders") == 0
-			&& check_val(argv[it + 1], "num"))
-			(*v).number_of_coders = *(int *)check_val(argv[it + 1], "num");
+			&& get_number_val(argv[it + 1]) != -1)
+			(*v).number_of_coders =  get_number_val(argv[it + 1]);
 		else if (strcmp(argv[it], "number_of_compiles_required") == 0
-			&& check_val(argv[it + 1], "num") != NULL)
-			(*v).number_of_compiles_required = *(int *)check_val(str, "num");
+			&& get_number_val(argv[it + 1]) != -1)
+			(*v).number_of_compiles_required = get_number_val(argv[it + 1]);
 		else if (strcmp(argv[it] ,"time_to_burnout") == 0
-			&& check_val(argv[it + 1], "time"))
-			(*v).time_to_burnout = (time_t)check_val(str, "time");
+			&& get_time_val(argv[it + 1]) != -1)
+			(*v).time_to_burnout = get_time_val(argv[it + 1]);
 		else if (strcmp(argv[it], "time_to_compile") == 0
-			&& check_val(argv[it + 1], "time"))
-			(*v).time_to_compile = (time_t)check_val(str, "time");
+			&& get_time_val(argv[it + 1]) != -1)
+			(*v).time_to_compile =  get_time_val(argv[it + 1]);
 		else if (strcmp(argv[it], "time_to_debug") == 0
-			&& check_val(argv[it + 1], "time"))
-			(*v).time_to_debug = (time_t)check_val(str, "time");
+			&& get_time_val(argv[it + 1]) != -1)
+			(*v).time_to_debug =  get_time_val(argv[it + 1]);
 		else if (strcmp(argv[it], "time_to_refactor") == 0
-			&& check_val(argv[it + 1], "time"))
-			(*v).time_to_refactor = (time_t)check_val(str, "time");
+			&& get_time_val(argv[it + 1]) != -1)
+			(*v).time_to_refactor =  get_time_val(argv[it + 1]);
 		else if (strcmp(argv[it], "dongle_cooldown") == 0
-			&& check_val(argv[it + 1], "time"))
-			(*v).dongle_cooldown = (time_t)check_val(str, "time");
+			&& get_time_val(argv[it + 1]) != -1)
+			(*v).dongle_cooldown =  get_time_val(argv[it + 1]);
 		else if (strcmp(argv[it], "scheduler") == 0
-			&& check_val(argv[it + 1], "policy"))
+			&& get_policy_val(argv[it + 1]) != -1)
 		{
-			(*v).scheduler = *(enum policy *)check_val(str, "policy");
+			(*v).scheduler =  get_policy_val(argv[it + 1]);
 		}
 		else {
 			printf("Undefined arg '%s'.\n", argv[it]);
@@ -114,5 +170,8 @@ int	parser(int argc, char **argv, struct vars *v)
 		printf("Number os coders must be grater than 0.\n");
 		return (0);
 	}
+	//stoped_c = malloc(sizeof(int));
+	//*stoped_c = 0; 
+	//v->stoped_coder = stoped_c;
 	return (1);
 }
