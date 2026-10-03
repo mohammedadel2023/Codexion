@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/03 18:40:59 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/03 19:24:29 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,9 @@ typedef struct montiort_args
 
 int		parser(int argc, char **argv, t_vars *v);
 int		thread_init(t_vars *vars);
-void	free_v(t_vars *v);
 t_vars	*copy(t_vars *v);
 
-void	*creat_thread(t_vars *v, int num);
+int	creat_thread(t_vars *v, int num, t_tstate *th_s);
+int	allocation(pthread_t **ths, t_tstate ***th_s, int coders);
 
 void	*coder(void *args);

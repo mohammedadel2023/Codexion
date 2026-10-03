@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/03 18:41:30 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/03 19:23:34 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,15 +91,16 @@ void	*thread_monitor(void *args)
 int	thread_init(t_vars *vars)
 {
 	int				initiated_coder;
-	pthread_t		ths[vars->number_of_coders];
+	pthread_t		*ths;
 	pthread_t		monitor_th;
-	t_tstate		*th_s[vars->number_of_coders];
+	t_tstate		**th_s;
 
+	allocation(&ths, &th_s, vars->number_of_coders);
+	printf("allocated\n");
 	initiated_coder = 0;
 	while (initiated_coder < vars->number_of_coders)
 	{
-		th_s[initiated_coder] = (t_tstate *)creat_thread(
-				vars, initiated_coder);
+		creat_thread(vars, initiated_coder, th_s[initiated_coder]);
 		if (!th_s[initiated_coder] || pthread_create(&ths[initiated_coder],
 				NULL, &coder, (void *)th_s[initiated_coder]) != 0)
 			return (3);
