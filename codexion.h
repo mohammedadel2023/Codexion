@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/04 15:07:11 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/04 15:31:36 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,15 @@ typedef struct thread_state
 
 typedef struct queue_el
 {
-	int	el_num;
-	int	el_wight;
+	int	coder_num;
+	int	coder_wight;
 }	t_queue_el;
+
+typedef struct queue
+{
+	t_queue_el	**qu;
+	int	els_num;
+}	t_queue;
 
 typedef struct monitor_args
 {
