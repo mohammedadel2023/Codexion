@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/03 19:24:29 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/04 14:19:04 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,11 @@ typedef struct montiort_args
 }	t_monitor_args;
 
 int		parser(int argc, char **argv, t_vars *v);
+
 int		thread_init(t_vars *vars);
+
+int		is_live(t_tstate **th_s, int state);
+int	free_thread(t_tstate **th_s);
 t_vars	*copy(t_vars *v);
 
 int	creat_thread(t_vars *v, int num, t_tstate *th_s);

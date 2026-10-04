@@ -6,51 +6,11 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/03 19:23:34 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/04 14:16:33 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
-
-int	is_live(t_tstate **th_s, int state)
-{
-	int	it;
-
-	it = 0;
-	while (it < th_s[0]->v->number_of_coders)
-	{
-		if (th_s[it]->is_alive == state)
-			return (1);
-		it++;
-	}
-	return (0);
-}
-
-t_vars	*copy(t_vars *v)
-{
-	t_vars	*new_v;
-
-	new_v = malloc(sizeof(struct vars));
-	*new_v = *v;
-	return (new_v);
-}
-
-int	free_thread(t_tstate **th_s)
-{
-	int	it;
-
-	if (!th_s)
-		return (0);
-	it = th_s[0]->v->number_of_coders;
-	while (0 <= it - 1)
-	{
-		pthread_mutex_destroy(&th_s[it - 1]->st_mutex);
-		free(th_s[it - 1]->v);
-		free(th_s[it - 1]);
-		it--;
-	}
-	return (1);
-}
 
 void	*thread_monitor(void *args)
 {
@@ -96,7 +56,6 @@ int	thread_init(t_vars *vars)
 	t_tstate		**th_s;
 
 	allocation(&ths, &th_s, vars->number_of_coders);
-	printf("allocated\n");
 	initiated_coder = 0;
 	while (initiated_coder < vars->number_of_coders)
 	{

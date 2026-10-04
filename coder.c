@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:07:04 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/03 18:08:24 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/04 14:19:49 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,6 @@ void	*coder(void *args)
 		th_s->st_time = t.tv_sec;
 		pthread_mutex_unlock(&(th_s->st_mutex));
 	}
-	th_s->is_alive = -1;
 	printf("the %i coder stop\n", th_s->coder_num);
+	th_s->is_alive = -1;
 }
