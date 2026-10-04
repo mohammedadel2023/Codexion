@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/04 15:31:36 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/04 17:18:13 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,3 +78,7 @@ int	allocation(pthread_t **ths, t_tstate ***th_s, int coders);
 
 void	*coder(void *args);
 void	is_burnout(time_t time, t_tstate *th_s);
+
+int	l_child(int index);
+int	r_child(int index);
+int	parent(int index);
