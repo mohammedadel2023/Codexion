@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/04 14:16:33 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/04 15:08:21 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,35 +16,23 @@ void	*thread_monitor(void *args)
 {
 	int				it;
 	struct timeval	t;
-	t_tstate		**th_s;
+	t_monitor_args	m_args;
 
-	th_s = (struct thread_state **)args;
-	while (is_live(th_s, 1))
+	m_args = *(t_monitor_args *)args;
+	while (is_live(m_args.th_s, 1))
 	{
 		it = 0;
-		while (it < (th_s[0]->v->number_of_coders))
+		while (it < (m_args.th_s[0]->v->number_of_coders))
 		{
-			if (gettimeofday(&t, NULL) == 0 && th_s[it]->is_alive)
-			{
-				pthread_mutex_lock(&(th_s[it]->st_mutex));
-				if (t.tv_sec - th_s[it]->st_time
-					>= th_s[it]->v->time_to_burnout)
-				{
-					th_s[it]->is_alive = 0;
-					printf("%i %i burned out\n", t.tv_sec, it);
-				}
-				else if (th_s[it]->compilation_times
-					== th_s[it]->v->time_to_burnout)
-					th_s[it]->is_alive = 0;
-				pthread_mutex_unlock(&(th_s[it]->st_mutex));
-			}
+			if (gettimeofday(&t, NULL) == 0 && m_args.th_s[0]->is_alive)
+				is_burnout(t.tv_sec, m_args.th_s[0]);
 			it++;
 		}
 	}
-	while (is_live(th_s, 0))
+	while (is_live(m_args.th_s, 0))
 		usleep(1);
 	printf("monitor thread stoped\n");
-	free_thread(th_s);
+	free_thread(m_args.th_s);
 	return (NULL);
 }
 
@@ -54,6 +42,7 @@ int	thread_init(t_vars *vars)
 	pthread_t		*ths;
 	pthread_t		monitor_th;
 	t_tstate		**th_s;
+	t_monitor_args	*m_args;
 
 	allocation(&ths, &th_s, vars->number_of_coders);
 	initiated_coder = 0;
@@ -65,7 +54,9 @@ int	thread_init(t_vars *vars)
 			return (3);
 		initiated_coder++;
 	}
-	if (pthread_create(&monitor_th, NULL, &thread_monitor, (void *)th_s) != 0)
+	if (monitor_args_init(&m_args, &th_s, *vars) == -1)
+		return (6);
+	if (pthread_create(&monitor_th, NULL, &thread_monitor, (void *)m_args) != 0)
 		return (5);
 	initiated_coder = 0;
 	while (initiated_coder < vars->number_of_coders)

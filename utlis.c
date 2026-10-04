@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 14:16:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/04 14:16:43 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/04 15:06:57 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,14 @@ int	free_thread(t_tstate **th_s)
 		it--;
 	}
 	return (1);
+}
+
+int	monitor_args_init(t_monitor_args **m_args, t_tstate ***th_s, t_vars args)
+{
+	*m_args = malloc(sizeof(t_monitor_args));
+	if (!m_args)
+		return (-1);
+	(*m_args)->th_s = *th_s;
+	(*m_args)->v = args;
+	return (0);
 }
