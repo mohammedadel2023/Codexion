@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 14:16:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/04 15:06:57 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/05 15:56:18 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ int	free_thread(t_tstate **th_s)
 		free(th_s[it - 1]);
 		it--;
 	}
+	free(th_s);
 	return (1);
 }
 

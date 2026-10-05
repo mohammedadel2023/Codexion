@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 13:01:39 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/04 14:54:02 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/05 15:51:30 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ int	allocation(pthread_t **ths, t_tstate ***th_s, int coders)
 	}
 	while (coders > it)
 	{
-		(*th_s)[it] = malloc(sizeof(t_tstate));
-		if (!(*th_s)[it])
+		(*th_s)[it++] = malloc(sizeof(t_tstate));
+		if (!(*th_s)[it - 1])
 		{
 			free(*ths);
 			while (--it != 0)
@@ -57,7 +57,6 @@ int	allocation(pthread_t **ths, t_tstate ***th_s, int coders)
 			free(*th_s);
 			return (-3);
 		}
-		it++;
 	}
 	return (0);
 }

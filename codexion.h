@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/04 17:18:13 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/05 15:43:33 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,17 +68,20 @@ int		parser(int argc, char **argv, t_vars *v);
 
 int		thread_init(t_vars *vars);
 
-int		monitor_args_init(t_monitor_args **m_args, t_tstate ***th_s, t_vars args);
+int		monitor_args_init(t_monitor_args **m_args,
+			t_tstate ***th_s, t_vars args);
 int		is_live(t_tstate **th_s, int state);
 int		free_thread(t_tstate **th_s);
 t_vars	*copy(t_vars *v);
 
-int	creat_thread(t_vars *v, int num, t_tstate *th_s);
-int	allocation(pthread_t **ths, t_tstate ***th_s, int coders);
+int		creat_thread(t_vars *v, int num, t_tstate *th_s);
+int		allocation(pthread_t **ths, t_tstate ***th_s, int coders);
 
 void	*coder(void *args);
 void	is_burnout(time_t time, t_tstate *th_s);
 
-int	l_child(int index);
-int	r_child(int index);
-int	parent(int index);
+int		create_queue(void **queue, int size);
+int		calc_wight(t_tstate *th_s);
+int		l_child(int index);
+int		r_child(int index);
+int		parent(int index);
