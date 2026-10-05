@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/05 15:43:33 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/05 18:01:31 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,14 @@ int		allocation(pthread_t **ths, t_tstate ***th_s, int coders);
 void	*coder(void *args);
 void	is_burnout(time_t time, t_tstate *th_s);
 
-int		create_queue(void **queue, int size);
+t_queue	*create_queue(int size);
 int		calc_wight(t_tstate *th_s);
 int		l_child(int index);
 int		r_child(int index);
 int		parent(int index);
+
+int		push(t_tstate *th_s, t_policy policy, t_queue	*queue);
+void	free_queue(t_queue *myqu);
+
+int		swap_q_el(t_queue *myqu, int index, int smallest);
+int		pull(t_queue *myqu);

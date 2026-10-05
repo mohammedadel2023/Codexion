@@ -6,25 +6,24 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 15:40:16 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/05 15:41:06 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/05 17:27:53 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-int	create_queue(void **queue, int size)
+t_queue	*create_queue(int size)
 {
 	t_queue		*myqu;
 	t_queue_el	**qu;
 
 	myqu = malloc(sizeof(t_queue));
 	qu = malloc(sizeof(t_queue_el *) * size);
-	if (!(qu) || !(myqu))
-		return (-1);
+	if (!(myqu))
+		return (NULL);
 	myqu->qu = qu;
 	myqu->els_num = 0;
-	*queue = myqu;
-	return (0);
+	return (myqu);
 }
 
 int	parent(int index)

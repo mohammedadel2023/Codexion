@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:11:51 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/04 16:22:39 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/05 17:07:36 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 int	main(int argc, char **argv)
 {
 	t_vars			*v;
-	struct timeval	t;
 
 	v = malloc(sizeof(t_vars));
 	if (!v)
