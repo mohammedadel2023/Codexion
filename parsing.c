@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:12:29 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/03 18:23:05 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/06 19:51:24 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,21 @@ time_t	get_time_val(char *str)
 	if (val < 0)
 		return (-1);
 	return ((time_t) val);
+}
+
+time_t	get_start_time(void)
+{
+	struct timeval	*time;
+	time_t			milit_time;
+
+	time = malloc(sizeof(struct timeval));
+	if (!time)
+		return (-1);
+	if (gettimeofday(time, NULL))
+		return (-1);
+	milit_time = time->tv_sec * 1000;
+	free(time);
+	return (milit_time);
 }
 
 int	get_number_val(char *str)
@@ -100,5 +115,6 @@ int	parser(int argc, char **argv, t_vars *v)
 		printf("Number os coders must be grater than 0.\n");
 		return (0);
 	}
+	v->st_run = get_start_time();
 	return (1);
 }

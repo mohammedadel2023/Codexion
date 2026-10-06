@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/06 16:35:13 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/06 20:14:16 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,12 @@ typedef enum policy
 	edf = 2
 }	t_policy;
 
+typedef struct dongle_state
+{
+	int				state;
+	pthread_mutex_t	dong_mutex;
+}	t_dongle_s;
+
 typedef struct vars
 {
 	int			number_of_coders;
@@ -33,7 +39,14 @@ typedef struct vars
 	int			number_of_compiles_required;
 	time_t		dongle_cooldown;
 	t_policy	scheduler;
+	time_t		st_run;
 }	t_vars;
+
+typedef struct dongle
+{
+	int				cooldown_time;
+	t_dongle_s		**dongle_arr;
+}	t_dongles;
 
 typedef struct thread_state
 {
@@ -42,6 +55,7 @@ typedef struct thread_state
 	int				is_alive;
 	int				coder_num;
 	pthread_mutex_t	st_mutex;
+	pthread_cond_t	cond;
 	t_vars			*v;
 }	t_tstate;
 
@@ -62,33 +76,37 @@ typedef struct monitor_args
 {
 	t_tstate	**th_s;
 	t_vars		v;
-	//t_queue_el	*queue;
+	t_queue		*myqu;
+	t_dongles	*dongle;
 }	t_monitor_args;
 
-int		parser(int argc, char **argv, t_vars *v);
+int			parser(int argc, char **argv, t_vars *v);
 
-int		thread_init(t_vars *vars);
+int			thread_init(t_vars *vars);
 
-int		monitor_args_init(t_monitor_args **m_args,
-			t_tstate ***th_s, t_vars args);
-int		is_live(t_tstate **th_s, int state);
-int		free_thread(t_tstate **th_s);
-t_vars	*copy(t_vars *v);
+int			monitor_args_init(t_monitor_args **m_args,
+				t_tstate ***th_s, t_vars args);
+int			is_live(t_tstate **th_s, int state, t_vars v);
+void		frees(t_monitor_args *m_args);
+int			free_thread(t_tstate **th_s);
+t_vars		*copy(t_vars *v);
 
-int		creat_thread(t_vars *v, int num, t_tstate *th_s);
-int		allocation(pthread_t **ths, t_tstate ***th_s, int coders);
+int			creat_thread(t_vars *v, int num, t_tstate *th_s);
+int			allocation(pthread_t **ths, t_tstate ***th_s, int coders);
+t_dongles	*create_dongles(int size, t_vars v);
+void	free_dongle(t_dongles *dongle, int size);
 
-void	*coder(void *args);
-void	is_burnout(time_t time, t_tstate *th_s);
+void		*coder(void *args);
+void		is_burnout(time_t time, t_tstate *th_s);
 
-t_queue	*create_queue(int size);
-int		calc_wight(t_tstate *th_s);
-int		l_child(int index);
-int		r_child(int index);
-int		parent(int index);
+t_queue		*create_queue(int size);
+int			calc_wight(t_tstate *th_s);
+int			l_child(int index);
+int			r_child(int index);
+int			parent(int index);
 
-int		push(t_tstate *th_s, t_policy policy, t_queue	*queue);
-void	free_queue(t_queue *myqu);
+int			push(t_tstate *th_s, t_policy policy, t_queue	*queue);
+void		free_queue(t_queue *myqu);
 
-int		swap_q_el(t_queue *myqu, int index, int smallest);
-int		pull(t_queue *myqu);
+int			swap_q_el(t_queue *myqu, int index, int smallest);
+int			pull(t_queue *myqu);

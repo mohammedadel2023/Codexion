@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/05 17:01:28 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/06 19:58:01 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,21 +19,22 @@ void	*thread_monitor(void *args)
 	t_monitor_args	*m_args;
 
 	m_args = (t_monitor_args *)args;
-	while (is_live(m_args->th_s, 1))
+	while (is_live(m_args->th_s, 1, m_args->v))
 	{
 		it = 0;
 		while (it < (m_args->th_s[0]->v->number_of_coders))
 		{
-			if (gettimeofday(&t, NULL) == 0 && m_args->th_s[0]->is_alive)
-				is_burnout(t.tv_sec, m_args->th_s[0]);
+			if (gettimeofday(&t, NULL) == 0 && m_args->th_s[it]->is_alive == 1)
+				is_burnout(t.tv_sec, m_args->th_s[it]);
 			it++;
 		}
 	}
-	while (is_live(m_args->th_s, 0))
+	printf("all threads finish\n");
+	while (is_live(m_args->th_s, 0, m_args->v))
 		usleep(1);
+	printf("all threads stop\n");
 	printf("monitor thread stoped\n");
-	free_thread(m_args->th_s);
-	free(m_args);
+	frees(m_args);
 	return (NULL);
 }
 
