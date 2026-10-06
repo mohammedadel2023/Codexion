@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 15:40:16 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/05 17:27:53 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/06 16:35:31 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ t_queue	*create_queue(int size)
 		return (NULL);
 	myqu->qu = qu;
 	myqu->els_num = 0;
+	myqu->full_els_num = 0;
 	return (myqu);
 }
 

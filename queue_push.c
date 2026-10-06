@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 17:13:38 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/05 18:42:00 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/06 16:35:58 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,12 @@ int	push(t_tstate *th_s, t_policy policy, t_queue	*myqu)
 	if (!q_el)
 		return (-1);
 	if (policy == fifo)
-		q_el->coder_wight = myqu->els_num + 1;
+		q_el->coder_wight = myqu->full_els_num + 1;
 	else
 		q_el->coder_wight = calc_wight(th_s);
 	q_el->coder_num = th_s->coder_num;
 	myqu->els_num++;
+	myqu->full_els_num++;
 	hide_push(myqu, q_el, policy);
 }
 

@@ -34,11 +34,16 @@ int	main(int argc, char **argv)
 	printf("assgin done\n");
 	myqu = create_queue(v->number_of_coders);
 	printf("create queue\n");
-	push(&t1, fifo, myqu);
 	push(&t2, fifo, myqu);
+	push(&t1, fifo, myqu);
 	push(&t3, fifo, myqu);
 	printf("push el\n");
 	printf("the queue include {%i} coder with size [%i]\n", myqu->qu[0]->coder_num, myqu->els_num);
+	printf("the top coder is [%i]\n", pull(myqu));
+	push(&t2, fifo, myqu);
+	push(&t3, fifo, myqu);
+	printf("the top coder is [%i]\n", pull(myqu));
+	printf("the top coder is [%i]\n", pull(myqu));
 	printf("the top coder is [%i]\n", pull(myqu));
 	printf("the top coder is [%i]\n", pull(myqu));
 	printf("the top coder is [%i]\n", pull(myqu));

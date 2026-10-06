@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/05 18:01:31 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/06 16:35:13 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ typedef struct queue_el
 typedef struct queue
 {
 	t_queue_el	**qu;
-	int	els_num;
+	int			els_num;
+	int			full_els_num;
 }	t_queue;
 
 typedef struct monitor_args
