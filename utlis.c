@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 14:16:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/06 20:17:13 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/07 12:40:11 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@ int	is_live(t_tstate **th_s, int state, t_vars v)
 	it = 0;
 	while (it < v.number_of_coders)
 	{
+		fprintf(stderr, "the coder [%i] is the problem\n", th_s[it]->coder_num);
 		pthread_mutex_lock(&th_s[it]->st_mutex);
+		fprintf(stderr, "the coder [%i] \n", th_s[it]->is_alive == state);
+		fprintf(stderr, "the coder state [%i] \n", th_s[it]->is_alive);
 		if (th_s[it]->is_alive == state)
 		{
 			//fprintf(stderr, "the coder [%i] is the problem\n", th_s[it]->coder_num);
@@ -51,7 +54,7 @@ int	free_thread(t_tstate **th_s)
 	while (0 <= it - 1)
 	{
 		pthread_mutex_destroy(&th_s[it - 1]->st_mutex);
-		pthread_cond_destroy(&(th_s[it]->cond));
+		pthread_cond_destroy(&(th_s[it - 1]->cond));
 		free(th_s[it - 1]->v);
 		free(th_s[it - 1]);
 		it--;
@@ -74,10 +77,10 @@ int	monitor_args_init(t_monitor_args **m_args, t_tstate ***th_s, t_vars args)
 	return (0);
 }
 
-void	frees(t_monitor_args *m_args)
+void	frees(t_monitor_args **m_args)
 {
-	free_thread(m_args->th_s);
-	free_queue(m_args->myqu);
-	free_dongle(m_args->dongle, m_args->v.number_of_coders);
-	free(m_args);
+	free_thread((*m_args)->th_s);
+	free_queue((*m_args)->myqu);
+	free_dongle((*m_args)->dongle, (*m_args)->v.number_of_coders);
+	free(*m_args);
 }

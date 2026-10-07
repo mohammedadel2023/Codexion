@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:12:29 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/06 19:51:24 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/07 11:20:20 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ time_t	get_start_time(void)
 		return (-1);
 	if (gettimeofday(time, NULL))
 		return (-1);
-	milit_time = time->tv_sec * 1000;
+	milit_time = time->tv_sec * 1000 + time->tv_usec / 1000;
 	free(time);
 	return (milit_time);
 }

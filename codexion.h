@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/06 20:14:16 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/07 13:22:03 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ typedef struct thread_state
 	int				coder_num;
 	pthread_mutex_t	st_mutex;
 	pthread_cond_t	cond;
+	t_dongle_s		*lift_d;
+	t_dongle_s		*right_d;
 	t_vars			*v;
 }	t_tstate;
 
@@ -87,7 +89,7 @@ int			thread_init(t_vars *vars);
 int			monitor_args_init(t_monitor_args **m_args,
 				t_tstate ***th_s, t_vars args);
 int			is_live(t_tstate **th_s, int state, t_vars v);
-void		frees(t_monitor_args *m_args);
+void		frees(t_monitor_args **m_args);
 int			free_thread(t_tstate **th_s);
 t_vars		*copy(t_vars *v);
 

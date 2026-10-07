@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/06 19:58:01 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/07 13:51:38 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,39 +34,61 @@ void	*thread_monitor(void *args)
 		usleep(1);
 	printf("all threads stop\n");
 	printf("monitor thread stoped\n");
-	frees(m_args);
+	frees(&m_args);
 	return (NULL);
 }
 
-int	thread_init(t_vars *vars)
+void	assign_dongles(t_tstate **th_s, t_dongles *dongle, t_vars v)
 {
-	int				initiated_coder;
-	pthread_t		*ths;
-	pthread_t		monitor_th;
-	t_tstate		**th_s;
-	t_monitor_args	*m_args;
+	int	it;
 
-	allocation(&ths, &th_s, vars->number_of_coders);
-	initiated_coder = 0;
-	while (initiated_coder < vars->number_of_coders)
+	it = 0;
+	while (it < v.number_of_coders - 1)
 	{
-		creat_thread(vars, initiated_coder, th_s[initiated_coder]);
+		th_s[it]->lift_d = dongle->dongle_arr[it];
+		th_s[it]->right_d = dongle->dongle_arr[(it + 1) % v.number_of_coders];
+		it++;
+	}
+}
+
+t_tstate	**call_coders(t_vars v)
+{
+	pthread_t	*ths;
+	t_tstate	**th_s;
+	int			initiated_coder;
+	t_dongles	*dongle;
+
+	allocation(&ths, &th_s, v.number_of_coders);
+	initiated_coder = 0;
+	while (initiated_coder < v.number_of_coders)
+	{
+		creat_thread(&v, initiated_coder + 1, th_s[initiated_coder]);
 		if (!th_s[initiated_coder] || pthread_create(&ths[initiated_coder],
 				NULL, &coder, (void *)th_s[initiated_coder]) != 0)
 			return (3);
 		initiated_coder++;
 	}
+	dongle = create_dongles(v.number_of_coders, v);
+	assign_dongles(th_s, dongle, v);
+	initiated_coder = 0;
+	while (initiated_coder < v.number_of_coders)
+		pthread_join(ths[initiated_coder++], NULL);
+	free(ths);
+	free(dongle);
+	return (th_s);
+}
+
+int	thread_init(t_vars *vars)
+{
+	pthread_t		monitor_th;
+	t_tstate		**th_s;
+	t_monitor_args	*m_args;
+
+	th_s = call_coders(*vars);
 	if (monitor_args_init(&m_args, &th_s, *vars) == -1)
 		return (6);
 	if (pthread_create(&monitor_th, NULL, &thread_monitor, (void *)m_args) != 0)
 		return (5);
-	initiated_coder = 0;
-	while (initiated_coder < vars->number_of_coders)
-	{
-		pthread_join(ths[initiated_coder], NULL);
-		initiated_coder++;
-	}
-	free(ths);
 	pthread_join(monitor_th, NULL);
 	return (1);
 }
