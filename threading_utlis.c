@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 13:01:39 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/07 11:23:10 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/07 15:25:15 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	create_dongle_s(int size, t_dongle_s **dongle_s)
 				free(dongle_s[--it]);
 			return (-3);
 		}
-		pthread_mutex_init(&dongle_s[it]->dong_mutex, NULL);
+		pthread_mutex_init(&(dongle_s[it]->dong_mutex), NULL);
 		dongle_s[it]->state = 1;
 		it++;
 	}
@@ -119,7 +119,7 @@ void	free_dongle(t_dongles *dongle, int size)
 	it = 0;
 	while (it < size)
 	{
-		pthread_mutex_destroy(&dongle->dongle_arr[it]->dong_mutex);
+		pthread_mutex_destroy(&(dongle->dongle_arr[it]->dong_mutex));
 		free(dongle->dongle_arr[it]);
 		it++;
 	}
