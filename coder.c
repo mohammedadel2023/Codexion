@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:07:04 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/07 17:49:59 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/07 17:53:15 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	*coder(void *args)
 	t_tstate		*th_s;
 
 	th_s = (t_tstate *)args;
-	//printf("the coder [%i] is ready to enter the loop\n", th_s->coder_num);
+	printf("the coder [%i] is ready to enter the loop\n", th_s->coder_num);
 	pthread_mutex_lock(&(th_s->st_mutex));
 	while (th_s->is_alive != 0 && th_s->compilation_times
 		!= th_s->v->number_of_compiles_required)

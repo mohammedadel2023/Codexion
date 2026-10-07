@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/07 17:51:06 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/07 18:02:02 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	*thread_monitor(void *args)
 	struct timeval	t;
 	t_monitor_args	*m_args;
 
+	printf("pleeeeees\n");
 	m_args = (t_monitor_args *)args;
 	printf("start monitor thread\n");
 	while (is_live(m_args->th_s, 1, m_args->v)
@@ -110,11 +111,12 @@ t_tstate	**call_coders(t_vars v)
 			return (NULL);
 		initiated_coder++;
 	}
+	printf("create all threads\n");
 	dongle = create_dongles(v.number_of_coders, v);
 	assign_dongles(th_s, dongle, v);
+	printf("assing the dongles\n");
 	initiated_coder = 0;
-	while (initiated_coder < v.number_of_coders)
-		pthread_join(ths[initiated_coder++], NULL);
+	printf("join the threads\n");
 	free(ths);
 	free(dongle->dongle_arr);
 	free(dongle);
@@ -126,15 +128,24 @@ int	thread_init(t_vars *vars)
 	pthread_t		monitor_th;
 	t_tstate		**th_s;
 	t_monitor_args	*m_args;
+	int				it;
 
+	it = 0;
 	th_s = call_coders(*vars);
+	printf("coder stoped\n");
 	if (monitor_args_init(&m_args, &th_s, *vars) == -1)
 	{
 		frees(&m_args);
 		return (6);
 	}
+	printf("create the monitor thread\n");
 	if (pthread_create(&monitor_th, NULL, &thread_monitor, (void *)m_args) != 0)
 		return (5);
 	pthread_join(monitor_th, NULL);
+	while (it < vars->number_of_coders)
+	{
+		printf("[%i]\n", it);
+		pthread_join(ths[it++], NULL);
+	}
 	return (1);
 }
