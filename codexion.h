@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/07 13:22:03 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/07 17:44:55 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ t_dongles	*create_dongles(int size, t_vars v);
 void	free_dongle(t_dongles *dongle, int size);
 
 void		*coder(void *args);
-void		is_burnout(time_t time, t_tstate *th_s);
+void		is_burnout(time_t time, t_tstate *th_s, t_queue *myqu);
 
 t_queue		*create_queue(int size);
 int			calc_wight(t_tstate *th_s);
@@ -112,3 +112,5 @@ void		free_queue(t_queue *myqu);
 
 int			swap_q_el(t_queue *myqu, int index, int smallest);
 int			pull(t_queue *myqu);
+int			top(t_queue *myqu);
+int			remove_it(t_queue *myqu, int coder);

@@ -6,11 +6,52 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/07 15:22:51 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/07 17:51:06 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
+
+int	is_dongle_free(int coder, t_dongles dongle, int size)
+{
+	if ((dongle.dongle_arr[coder]->state)
+		&& dongle.dongle_arr[coder + 1 % size]->state)
+		return (1);
+	return (0);
+}
+
+void	signal(t_queue *myqu, t_dongles *dongle, t_tstate **th_s)
+{
+	int	coder;
+	int	size;
+	int	it;
+
+	it = 1;
+	size = th_s[0]->v->number_of_coders;
+	coder = top(myqu);
+	if (is_dongle_free(coder, *dongle,
+		size));
+	{
+		dongle->dongle_arr[coder]->state = 0;
+		dongle->dongle_arr[(coder + 1) % size]->state = 0;
+		pull(myqu);
+		pthread_cond_signal(&th_s[coder]->cond);
+		//return;
+	}
+	while (it < myqu->els_num)
+	{
+		coder = myqu->qu[it]->coder_num;
+		if (is_dongle_free(coder, *dongle, size))
+		{
+			dongle->dongle_arr[coder]->state = 0;
+			dongle->dongle_arr[(coder + 1) % size]->state = 0;
+			remove_it(myqu, coder);
+			pthread_cond_signal(&th_s[coder]->cond);
+			//return;
+		}
+	}
+	
+}
 
 void	*thread_monitor(void *args)
 {
@@ -19,15 +60,18 @@ void	*thread_monitor(void *args)
 	t_monitor_args	*m_args;
 
 	m_args = (t_monitor_args *)args;
-	while (is_live(m_args->th_s, 1, m_args->v))
+	printf("start monitor thread\n");
+	while (is_live(m_args->th_s, 1, m_args->v)
+			|| is_live(m_args->th_s, 2, m_args->v))
 	{
 		it = 0;
 		while (it < (m_args->th_s[0]->v->number_of_coders))
 		{
 			if (gettimeofday(&t, NULL) == 0 && m_args->th_s[it]->is_alive == 1)
-				is_burnout(t.tv_sec, m_args->th_s[it]);
+				is_burnout(t.tv_sec, m_args->th_s[it], m_args->myqu);
 			it++;
 		}
+		signal(m_args->myqu, m_args->dongle, m_args->th_s);
 	}
 	while (is_live(m_args->th_s, 0, m_args->v))
 		usleep(1);

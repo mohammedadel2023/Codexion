@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 16:56:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/05 18:41:05 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/07 17:46:06 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,13 @@ int	swap_q_el(t_queue *myqu, int index, int smallest)
 	return (smallest);
 }
 
-int	heapify_down(t_queue *myqu)
+int	heapify_down(t_queue *myqu, int index)
 {
-	int			index;
 	int			smallest;
 	int			left;
 	int			right;
 	t_queue_el	*buffer;
 
-	index = 0;
 	smallest = index;
 	while (1)
 	{
@@ -66,7 +64,7 @@ int	get_top(t_queue *myqu)
 		myqu->qu[0] = myqu->qu[myqu->els_num - 1];
 		myqu->qu[myqu->els_num - 1] = NULL;
 		myqu->els_num--;
-		heapify_down(myqu);
+		heapify_down(myqu, 0);
 	}
 	return (top_coder);
 }
@@ -78,4 +76,34 @@ int	pull(t_queue *myqu)
 	if (!(myqu->els_num > 0))
 		return (-2);
 	return (get_top(myqu));
+}
+
+int	top(t_queue *myqu)
+{
+	if (!myqu)
+		return (-2);
+	if (myqu->els_num == 0)
+		return (-1);
+	return (myqu->qu[0]->coder_num);
+}
+
+int remove_it(t_queue *myqu, int coder)
+{
+	int	it;
+
+	it = 0;
+	if (!myqu)
+		return (-2);
+	if (myqu->els_num == 0)
+		return (-1);
+	while (it < myqu->els_num)
+	{
+		if (myqu->qu[it]->coder_num == coder)
+		{
+			myqu->qu[it] = myqu->qu[myqu->els_num - 1];
+			myqu->qu[myqu->els_num - 1] = NULL;
+			heapify_down(myqu, it);
+			return (0);
+		}
+	}
 }
