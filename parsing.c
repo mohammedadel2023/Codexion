@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:12:29 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/07 11:20:20 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/08 14:58:26 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,52 +69,41 @@ int	parser(int argc, char **argv, t_vars *v)
 	char	*str;
 
 	it = 1;
-	if (argc != 17)
+	if (argc != 9)
 	{
 		printf("Args issue check your args\n");
-		return (0);
+		return (1);
 	}
 	while (it < argc)
 	{
-		str = argv[it + 1];
-		if (strcmp(argv[it], "number_of_coders") == 0
-			&& get_number_val(argv[it + 1]) != -1)
-			(*v).number_of_coders = get_number_val(argv[it + 1]);
-		else if (strcmp(argv[it], "number_of_compiles_required") == 0
-			&& get_number_val(argv[it + 1]) != -1)
-			(*v).number_of_compiles_required = get_number_val(argv[it + 1]);
-		else if (strcmp(argv[it], "time_to_burnout") == 0
-			&& get_time_val(argv[it + 1]) != -1)
-			(*v).time_to_burnout = get_time_val(argv[it + 1]);
-		else if (strcmp(argv[it], "time_to_compile") == 0
-			&& get_time_val(argv[it + 1]) != -1)
-			(*v).time_to_compile = get_time_val(argv[it + 1]);
-		else if (strcmp(argv[it], "time_to_debug") == 0
-			&& get_time_val(argv[it + 1]) != -1)
-			(*v).time_to_debug = get_time_val(argv[it + 1]);
-		else if (strcmp(argv[it], "time_to_refactor") == 0
-			&& get_time_val(argv[it + 1]) != -1)
-			(*v).time_to_refactor = get_time_val(argv[it + 1]);
-		else if (strcmp(argv[it], "dongle_cooldown") == 0
-			&& get_time_val(argv[it + 1]) != -1)
-			(*v).dongle_cooldown = get_time_val(argv[it + 1]);
-		else if (strcmp(argv[it], "scheduler") == 0
-			&& get_policy_val(argv[it + 1]) != -1)
-		{
-			(*v).scheduler = get_policy_val(argv[it + 1]);
-		}
+		if (it == 1 && get_number_val(argv[it]) != -1)
+			(*v).number_of_coders = get_number_val(argv[it]);
+		else if (it == 2 && get_number_val(argv[it]) != -1)
+			(*v).time_to_burnout = get_number_val(argv[it]);
+		else if (it == 3 && get_time_val(argv[it]) != -1)
+			(*v).time_to_compile = get_time_val(argv[it]);
+		else if (it == 4 && get_time_val(argv[it]) != -1)
+			(*v).time_to_debug = get_time_val(argv[it]);
+		else if (it == 5 && get_time_val(argv[it]) != -1)
+			(*v).time_to_refactor = get_time_val(argv[it]);
+		else if (it == 6 && get_time_val(argv[it]) != -1)
+			(*v).number_of_compiles_required = get_time_val(argv[it]);
+		else if (it == 7 && get_time_val(argv[it]) != -1)
+			(*v).dongle_cooldown = get_time_val(argv[it]);
+		else if (it == 8 && get_policy_val(argv[it]) != -1)
+			(*v).scheduler = get_policy_val(argv[it]);
 		else
 		{
 			printf("Undefined arg '%s'.\n", argv[it]);
-			return (0);
+			return (2);
 		}
-		it += 2;
+		it++;
 	}
 	if (v->number_of_coders < 1)
 	{
 		printf("Number os coders must be grater than 0.\n");
-		return (0);
+		return (3);
 	}
 	v->st_run = get_start_time();
-	return (1);
+	return (0);
 }

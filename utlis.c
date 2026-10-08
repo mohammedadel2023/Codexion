@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 14:16:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/07 15:24:45 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/08 11:01:47 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	is_live(t_tstate **th_s, int state, t_vars v)
 	{
 
 		pthread_mutex_lock(&th_s[it]->st_mutex);
-		if (th_s[it]->is_alive == state)
+		if (*th_s[it]->is_alive == state)
 		{
 			pthread_mutex_unlock(&th_s[it]->st_mutex);
 			return (1);

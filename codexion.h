@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/07 17:44:55 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/08 10:58:54 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef struct thread_state
 {
 	time_t			st_time;
 	int				compilation_times;
-	int				is_alive;
+	int				*is_alive;
 	int				coder_num;
 	pthread_mutex_t	st_mutex;
 	pthread_cond_t	cond;
@@ -81,6 +81,13 @@ typedef struct monitor_args
 	t_queue		*myqu;
 	t_dongles	*dongle;
 }	t_monitor_args;
+
+typedef struct call_coder_res
+{
+	t_tstate	**th_s;
+	pthread_t	*ths;
+} t_call_res;
+
 
 int			parser(int argc, char **argv, t_vars *v);
 

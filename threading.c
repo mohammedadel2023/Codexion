@@ -6,16 +6,18 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/07 18:02:02 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/08 11:04:17 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-int	is_dongle_free(int coder, t_dongles dongle, int size)
+int	is_dongle_free(int coder, t_dongles *dongle, int size)
 {
-	if ((dongle.dongle_arr[coder]->state)
-		&& dongle.dongle_arr[coder + 1 % size]->state)
+	if (dongle->dongle_arr[coder]->state)
+		printf("array is exist\n");
+	if ((dongle->dongle_arr[coder]->state)
+		&& dongle->dongle_arr[coder + 1 % size]->state)
 		return (1);
 	return (0);
 }
@@ -29,7 +31,13 @@ void	signal(t_queue *myqu, t_dongles *dongle, t_tstate **th_s)
 	it = 1;
 	size = th_s[0]->v->number_of_coders;
 	coder = top(myqu);
-	if (is_dongle_free(coder, *dongle,
+	if (coder == -1)
+	{
+		//printf("empty queue\n");
+		return;
+	}
+	printf("singnal pass\n");
+	if (is_dongle_free(coder, dongle,
 		size));
 	{
 		dongle->dongle_arr[coder]->state = 0;
@@ -41,7 +49,7 @@ void	signal(t_queue *myqu, t_dongles *dongle, t_tstate **th_s)
 	while (it < myqu->els_num)
 	{
 		coder = myqu->qu[it]->coder_num;
-		if (is_dongle_free(coder, *dongle, size))
+		if (is_dongle_free(coder, dongle, size))
 		{
 			dongle->dongle_arr[coder]->state = 0;
 			dongle->dongle_arr[(coder + 1) % size]->state = 0;
@@ -59,19 +67,22 @@ void	*thread_monitor(void *args)
 	struct timeval	t;
 	t_monitor_args	*m_args;
 
-	printf("pleeeeees\n");
 	m_args = (t_monitor_args *)args;
-	printf("start monitor thread\n");
 	while (is_live(m_args->th_s, 1, m_args->v)
 			|| is_live(m_args->th_s, 2, m_args->v))
 	{
 		it = 0;
+		//printf("looping on all thraeds\n");
 		while (it < (m_args->th_s[0]->v->number_of_coders))
 		{
-			if (gettimeofday(&t, NULL) == 0 && m_args->th_s[it]->is_alive == 1)
+			if (gettimeofday(&t, NULL) == 0 && *m_args->th_s[it]->is_alive == 1)
+			{
+				//printf("enter the func which have burnout\n");
 				is_burnout(t.tv_sec, m_args->th_s[it], m_args->myqu);
+			}
 			it++;
 		}
+		//printf("signal\n");
 		signal(m_args->myqu, m_args->dongle, m_args->th_s);
 	}
 	while (is_live(m_args->th_s, 0, m_args->v))
@@ -94,12 +105,13 @@ void	assign_dongles(t_tstate **th_s, t_dongles *dongle, t_vars v)
 	}
 }
 
-t_tstate	**call_coders(t_vars v)
+t_call_res	*call_coders(t_vars v)
 {
 	pthread_t	*ths;
 	t_tstate	**th_s;
 	int			initiated_coder;
 	t_dongles	*dongle;
+	t_call_res	*call_res;
 
 	allocation(&ths, &th_s, v.number_of_coders);
 	initiated_coder = 0;
@@ -111,41 +123,40 @@ t_tstate	**call_coders(t_vars v)
 			return (NULL);
 		initiated_coder++;
 	}
-	printf("create all threads\n");
 	dongle = create_dongles(v.number_of_coders, v);
 	assign_dongles(th_s, dongle, v);
-	printf("assing the dongles\n");
-	initiated_coder = 0;
-	printf("join the threads\n");
-	free(ths);
+	call_res = malloc(sizeof(t_call_res));
+	if (!call_res)
+		return (NULL);
 	free(dongle->dongle_arr);
 	free(dongle);
-	return (th_s);
+	call_res->th_s = th_s;
+	call_res->ths = ths;
+
+	return (call_res);
 }
 
 int	thread_init(t_vars *vars)
 {
 	pthread_t		monitor_th;
-	t_tstate		**th_s;
+	t_call_res		*call_res;
 	t_monitor_args	*m_args;
 	int				it;
 
 	it = 0;
-	th_s = call_coders(*vars);
-	printf("coder stoped\n");
-	if (monitor_args_init(&m_args, &th_s, *vars) == -1)
+	call_res = call_coders(*vars);
+	if (!call_res)
+		return (7);
+	if (monitor_args_init(&m_args, &call_res->th_s, *vars) == -1)
 	{
 		frees(&m_args);
 		return (6);
 	}
-	printf("create the monitor thread\n");
 	if (pthread_create(&monitor_th, NULL, &thread_monitor, (void *)m_args) != 0)
 		return (5);
 	pthread_join(monitor_th, NULL);
+	it = 0;
 	while (it < vars->number_of_coders)
-	{
-		printf("[%i]\n", it);
-		pthread_join(ths[it++], NULL);
-	}
+		pthread_join(call_res->ths[it++], NULL);
 	return (1);
 }

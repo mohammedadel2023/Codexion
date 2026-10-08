@@ -1,7 +1,7 @@
 compile:
 	cc -g main.c parsing.c threading.c threading_utlis.c utlis.c coder.c queue_utlis.c queue_push.c queue_pull.c -o mm
 run:
-	./mm number_of_compiles_required 5 time_to_burnout  1200 time_to_compile 200 number_of_coders 10 time_to_debug 12 time_to_refactor 45 dongle_cooldown 1 scheduler edf
+	./mm 5  1200  10  10  12  45  1  edf
 clean:
 	rm mm
 	rm *.o
