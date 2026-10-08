@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/08 10:58:54 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/08 15:01:26 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef struct thread_state
 {
 	time_t			st_time;
 	int				compilation_times;
-	int				*is_alive;
+	int				is_alive;
 	int				coder_num;
 	pthread_mutex_t	st_mutex;
 	pthread_cond_t	cond;

@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 13:01:39 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/08 11:03:55 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/08 15:01:38 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,7 @@ int	creat_thread(t_vars *v, int num, t_tstate *th_s)
 	th_s->v = copy(v);
 	th_s->st_time = (time->tv_sec * 1000) + time->tv_usec / 1000 - v->st_run;
 	th_s->compilation_times = 0;
-	th_s->is_alive = malloc(sizeof(int));
-	*th_s->is_alive = 1;
+	th_s->is_alive = 1;
 	th_s->coder_num = num;
 	if (pthread_cond_init(&(th_s->cond), NULL) != 0)
 		return (-2);

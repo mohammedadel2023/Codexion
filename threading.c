@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/08 11:04:17 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/08 15:48:50 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,9 @@ void	signal(t_queue *myqu, t_dongles *dongle, t_tstate **th_s)
 	{
 		dongle->dongle_arr[coder]->state = 0;
 		dongle->dongle_arr[(coder + 1) % size]->state = 0;
-		pull(myqu);
-		pthread_cond_signal(&th_s[coder]->cond);
+		printf("the pll result is [%i]\n", pull(myqu));
+		printf("is free\n");
+		pthread_cond_signal(&th_s[coder - 1]->cond);
 		//return;
 	}
 	while (it < myqu->els_num)
@@ -75,16 +76,20 @@ void	*thread_monitor(void *args)
 		//printf("looping on all thraeds\n");
 		while (it < (m_args->th_s[0]->v->number_of_coders))
 		{
-			if (gettimeofday(&t, NULL) == 0 && *m_args->th_s[it]->is_alive == 1)
+			if (gettimeofday(&t, NULL) == 0 && m_args->th_s[it]->is_alive != 0)
 			{
-				//printf("enter the func which have burnout\n");
+				// printf("enter the func which have burnout\n");
+				usleep(100000);
 				is_burnout(t.tv_sec, m_args->th_s[it], m_args->myqu);
+				//printf("out step and the coder is [%i]\n", m_args->th_s[it]->coder_num);
 			}
+			//printf("the cond is [%i] for coder [%i]\n", gettimeofday(&t, NULL) == 0 && m_args->th_s[it]->is_alive == 1,  m_args->th_s[it]->coder_num);
 			it++;
 		}
-		//printf("signal\n");
+		printf("signal\n");
 		signal(m_args->myqu, m_args->dongle, m_args->th_s);
 	}
+	printf("finish the loop\n");
 	while (is_live(m_args->th_s, 0, m_args->v))
 		usleep(1);
 	printf("monitor thread stoped\n");
