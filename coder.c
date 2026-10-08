@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:07:04 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/08 15:40:32 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/08 17:15:31 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,25 +17,25 @@ void	is_burnout(time_t time, t_tstate *th_s, t_queue *myqu)
 	time_t	conv_time;
 
 	conv_time = (time * 1000) - th_s->v->st_run;
+	printf("------>the coder [%i] is [%i] live status", th_s->coder_num, th_s->is_alive);
 	if (th_s->is_alive == -1)
 		return;
 	pthread_mutex_lock(&(th_s->st_mutex));
-	//printf("enter the is_burnout\n");
-	printf("now check the state and it is [%i]\n", th_s->is_alive);
-	if (th_s->is_alive == 2)
-	{
-		printf("the coder [%i] was pushed\n", th_s->coder_num);
-		push(th_s, th_s->v->scheduler, myqu);
-		printf("------------>%i<--------------\n", myqu->qu[0]->coder_num);
-		th_s->is_alive = 1;
-	}
 	if (conv_time - th_s->st_time
 		>= th_s->v->time_to_burnout)
 	{
 		th_s->is_alive = 0;
 		printf("%i %i burned out\n", conv_time, th_s->coder_num);
 	}
+	else if (th_s->is_alive == 2)
+	{
+		printf("the coder [%i] was pushed\n", th_s->coder_num);
+		push(th_s, th_s->v->scheduler, myqu);
+		printf("------------>%i<--------------\n", myqu->qu[0]->coder_num);
+		th_s->is_alive = 1;
+	}
 	pthread_mutex_unlock(&(th_s->st_mutex));
+	printf("done\n");
 }
 
 void	coder_compile(t_tstate *th_s)
@@ -66,11 +66,9 @@ void	*coder(void *args)
 		th_s->is_alive = 2;
 		printf("the state change\n");
 		pthread_cond_wait(&th_s->cond, &th_s->st_mutex);
-		pthread_mutex_unlock(&(th_s->st_mutex));
 		if (gettimeofday(&t, NULL) != 0)
 			return (NULL);
 		th_s->st_time = (t.tv_sec * 1000) + t.tv_usec / 1000 - th_s->v->st_run;
-		pthread_mutex_lock(&(th_s->st_mutex));
 		coder_compile(th_s);
 		th_s->compilation_times++;
 		printf("%i %i is debugging", th_s->st_time, th_s->coder_num);
@@ -78,9 +76,11 @@ void	*coder(void *args)
 		printf("%i %i is refactoring\n", th_s->st_time, th_s->coder_num);
 		usleep(th_s->v->time_to_refactor * 1000);
 	}
+	pthread_mutex_unlock(&(th_s->st_mutex));
 	th_s->is_alive = -1;
 	printf("the %i coder stop and the is_alive is [%i]\n", th_s->coder_num, th_s->is_alive);
 	pthread_mutex_unlock(&(th_s->st_mutex));
+	return (NULL);
 }
 
 

@@ -1,7 +1,7 @@
 compile:
 	cc -g main.c parsing.c threading.c threading_utlis.c utlis.c coder.c queue_utlis.c queue_push.c queue_pull.c -o mm
 run:
-	./mm 5  1200  1  1  1  1  1  edf
+	./mm 5  12000  5  10  15  1  1  fifo
 clean:
 	rm mm
 	rm *.o
