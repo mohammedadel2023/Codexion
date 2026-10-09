@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:07:04 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 14:45:11 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 15:24:36 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ void	is_burnout(struct timeval t, t_tstate *th_s, t_queue *myqu)
 	{
 		th_s->is_alive = 0;
 		th_s->v->sim_state = 0;
-		printf("%i %i burned out\n", conv_time, th_s->coder_num);
+		if (th_s->v->sim_state)
+			printf("%i %i burned out\n", conv_time, th_s->coder_num);
 	}
 	else if (th_s->is_alive == 2)
 	{
@@ -76,7 +77,7 @@ void *coder(void *args)
 		th_s->is_alive = 2;
 		while (th_s->is_alive == 2)
 			pthread_cond_wait(&th_s->cond, &th_s->st_mutex);
-		if (gettimeofday(&t, NULL) != 0)
+		if (gettimeofday(&t, NULL) != 0 || th_s->v->sim_state != 0)
 		{
 			pthread_mutex_unlock(&th_s->st_mutex);
 			return (NULL);
