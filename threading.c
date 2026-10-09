@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 18:45:13 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 19:05:30 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,23 +113,23 @@ void	*thread_monitor(void *args)
 		}
 		signal_it(m_args->myqu, m_args->dongle, m_args->th_s,
 			m_args->v->dongle_cooldown);
+		usleep(200);
 	}
-	int	i = 0;
-	while (i < m_args->v->number_of_coders)
+	it = 0;
+	while (it < m_args->v->number_of_coders)
 	{
-		if (m_args->th_s[i]->is_alive != -1)
+		if (m_args->th_s[it]->is_alive != -1)
 		{
-			m_args->th_s[i]->is_alive = 0;
-			pthread_mutex_lock(&m_args->th_s[i]->st_mutex);
-			m_args->th_s[i]->is_alive = 0;
-			pthread_cond_signal(&m_args->th_s[i]->cond);
-			pthread_mutex_unlock(&m_args->th_s[i]->st_mutex);
+			m_args->th_s[it]->is_alive = 0;
+			pthread_mutex_lock(&m_args->th_s[it]->st_mutex);
+			m_args->th_s[it]->is_alive = 0;
+			pthread_cond_signal(&m_args->th_s[it]->cond);
+			pthread_mutex_unlock(&m_args->th_s[it]->st_mutex);
 		}
-		i++;
+		it++;
 	}
 	while (is_live(m_args->th_s, 0, m_args->v))
 		usleep(1);
-	frees(&m_args);
 	return (NULL);
 }
 
@@ -173,7 +173,6 @@ t_call_res	*call_coders(t_vars *v)
 	free(dongle);
 	call_res->th_s = th_s;
 	call_res->ths = ths;
-
 	return (call_res);
 }
 
@@ -199,5 +198,6 @@ int	thread_init(t_vars *vars)
 	pthread_join(monitor_th, NULL);
 	while (it < vars->number_of_coders)
 		pthread_join(call_res->ths[it++], NULL);
+	frees(&m_args);
 	return (1);
 }
