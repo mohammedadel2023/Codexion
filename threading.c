@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 11:40:42 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 11:50:03 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,6 @@ void	*thread_monitor(void *args)
 	int				it;
 	struct timeval	t;
 	t_monitor_args	*m_args;
-	int				stop;
 
 	m_args = (t_monitor_args *)args;
 	while ((is_live(m_args->th_s, 1, m_args->v)
@@ -113,14 +112,14 @@ void	*thread_monitor(void *args)
 		{
 			if (gettimeofday(&t, NULL) == 0 && m_args->th_s[it]->is_alive != 0)
 			{
-				is_burnout(t.tv_sec, m_args->th_s[it], m_args->myqu);
+				is_burnout(t, m_args->th_s[it], m_args->myqu);
 			}
 			it++;
 		}
 		signal(m_args->myqu, m_args->dongle, m_args->th_s,
 			m_args->v.dongle_cooldown);
 	}
-	while (is_live(m_args->th_s, 0, m_args->v) && stop != 1)
+	while (is_live(m_args->th_s, 0, m_args->v))
 		usleep(1);
 	frees(&m_args);
 	return (NULL);

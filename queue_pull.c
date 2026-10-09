@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 16:56:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 10:06:36 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 11:55:13 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,4 +108,5 @@ int remove_it(t_queue *myqu, int coder)
 		}
 		it++;
 	}
+	return (0);
 }

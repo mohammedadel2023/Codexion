@@ -6,18 +6,19 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:07:04 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 11:28:20 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 11:58:15 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void	is_burnout(time_t time, t_tstate *th_s, t_queue *myqu)
+void	is_burnout(struct timeval t, t_tstate *th_s, t_queue *myqu)
 {
 	time_t	conv_time;
 
 	pthread_mutex_lock(&(th_s->st_mutex));
-	conv_time = (time * 1000) - th_s->v->st_run;
+	conv_time = (t.tv_sec * 1000) + (t.tv_usec / 1000)
+		- th_s->v->st_run;
 	if (th_s->is_alive == -1)
 	{
 		pthread_mutex_unlock(&(th_s->st_mutex));

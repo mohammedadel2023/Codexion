@@ -6,13 +6,13 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 17:13:38 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 09:50:16 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 11:55:43 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-int	heapify_up(t_queue *myqu)
+void	heapify_up(t_queue *myqu)
 {
 	int			index;
 
@@ -46,6 +46,7 @@ int	push(t_tstate *th_s, t_policy policy, t_queue	*myqu)
 	myqu->els_num++;
 	myqu->full_els_num++;
 	hide_push(myqu, q_el, policy);
+	return (0);
 }
 
 void	free_queue(t_queue *myqu)

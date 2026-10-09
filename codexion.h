@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 11:25:33 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 11:50:33 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ t_dongles	*create_dongles(int size, t_vars v);
 void		free_dongle(t_dongles *dongle, int size);
 
 void		*coder(void *args);
-void		is_burnout(time_t time, t_tstate *th_s, t_queue *myqu);
+void		is_burnout(struct timeval t, t_tstate *th_s, t_queue *myqu);
 
 t_queue		*create_queue(int size);
 int			calc_wight(t_tstate *th_s);
