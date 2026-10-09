@@ -6,18 +6,18 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 14:16:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 11:41:02 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 18:20:19 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-int	is_live(t_tstate **th_s, int state, t_vars v)
+int	is_live(t_tstate **th_s, int state, t_vars *v)
 {
 	int	it;
 
 	it = 0;
-	while (it < v.number_of_coders)
+	while (it < v->number_of_coders)
 	{
 
 		pthread_mutex_lock(&th_s[it]->st_mutex);
@@ -76,17 +76,15 @@ t_dongles	*sub_create_dongle(t_tstate **th_s, t_vars v)
 	return (dongle);
 }
 
-int	monitor_args_init(t_monitor_args **m_args, t_tstate ***th_s, t_vars args)
+int	monitor_args_init(t_monitor_args **m_args, t_tstate ***th_s, t_vars *args)
 {
-	t_queue	*myqu;
-
 	*m_args = malloc(sizeof(t_monitor_args));
 	if (!m_args)
 		return (-1);
 	(*m_args)->th_s = *th_s;
 	(*m_args)->v = args;
-	(*m_args)->myqu = create_queue(args.number_of_coders);
-	(*m_args)->dongle = sub_create_dongle(*th_s, args);
+	(*m_args)->myqu = create_queue(args->number_of_coders);
+	(*m_args)->dongle = sub_create_dongle(*th_s, *args);
 	if (!(*m_args)->dongle)
 		return (-1);
 	return (0);
@@ -95,7 +93,8 @@ int	monitor_args_init(t_monitor_args **m_args, t_tstate ***th_s, t_vars args)
 void	frees(t_monitor_args **m_args)
 {
 	free_queue((*m_args)->myqu);
-	free_dongle((*m_args)->dongle, (*m_args)->v.number_of_coders);
+	free_dongle((*m_args)->dongle, (*m_args)->v->number_of_coders);
 	free_thread((*m_args)->th_s);
+	free((*m_args)->v);
 	free(*m_args);
 }

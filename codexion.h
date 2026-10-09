@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 11:50:33 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 18:17:40 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ typedef struct vars
 	time_t		dongle_cooldown;
 	t_policy	scheduler;
 	time_t		st_run;
-	int			sim_state;
+	int			*sim_state;
 }	t_vars;
 
 typedef struct dongle
@@ -79,7 +79,7 @@ typedef struct queue
 typedef struct monitor_args
 {
 	t_tstate	**th_s;
-	t_vars		v;
+	t_vars		*v;
 	t_queue		*myqu;
 	t_dongles	*dongle;
 }	t_monitor_args;
@@ -96,8 +96,8 @@ int			parser(int argc, char **argv, t_vars *v);
 int			thread_init(t_vars *vars);
 
 int			monitor_args_init(t_monitor_args **m_args,
-				t_tstate ***th_s, t_vars args);
-int			is_live(t_tstate **th_s, int state, t_vars v);
+				t_tstate ***th_s, t_vars *args);
+int			is_live(t_tstate **th_s, int state, t_vars *v);
 void		frees(t_monitor_args **m_args);
 int			free_thread(t_tstate **th_s);
 t_vars		*copy(t_vars *v);

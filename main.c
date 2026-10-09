@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:11:51 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 11:25:51 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 18:16:19 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ int	main(int argc, char **argv)
 		free(v);
 		return (0);
 	}
-	v->sim_state = 1;
+	v->sim_state = malloc(sizeof(int));
+	*v->sim_state = 1;
 	thread_init(v);
 	free(v);
 	return (0);
