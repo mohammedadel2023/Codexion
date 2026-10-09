@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 15:07:36 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 15:15:49 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,15 @@ void	*thread_monitor(void *args)
 		}
 		signal_it(m_args->myqu, m_args->dongle, m_args->th_s,
 			m_args->v.dongle_cooldown);
+	}
+	int	i = 0;
+	while (i < m_args->v.number_of_coders)
+	{
+		pthread_mutex_lock(&m_args->th_s[i]->st_mutex);
+		m_args->th_s[i]->is_alive = 0;
+		pthread_cond_signal(&m_args->th_s[i]->cond);
+		pthread_mutex_unlock(&m_args->th_s[i]->st_mutex);
+		i++;
 	}
 	while (is_live(m_args->th_s, 0, m_args->v))
 		usleep(1);
