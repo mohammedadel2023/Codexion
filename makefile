@@ -7,4 +7,4 @@ clean:
 	rm *.o
 
 valgrind: mm
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./mm number_of_compiles_required 5 time_to_burnout 3000 time_to_compile 45 number_of_coders 5 time_to_debug 12 time_to_refactor 45 dongle_cooldown 1 scheduler edf
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./mm 5  1200  5  100  30  1  3  fifo

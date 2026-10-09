@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:07:04 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 11:58:15 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 14:04:42 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,15 @@ void	coder_compile(t_tstate *th_s)
 	printf("%i %i has taken a dongle\n", th_s->st_time, th_s->coder_num);
 	printf("%i %i is compiling\n", th_s->st_time, th_s->coder_num);
 	usleep(th_s->v->time_to_compile * 1000);
-	pthread_mutex_unlock(&th_s->lift_d->dong_mutex);
 	th_s->lift_d->state = 1;
-	pthread_mutex_unlock(&th_s->right_d->dong_mutex);
-	th_s->right_d->state = 1;
-	gettimeofday(&t, NULL);
 	th_s->lift_d->last_used = (t.tv_sec * 1000) + (t.tv_usec / 1000)
 		- th_s->v->st_run;
+	pthread_mutex_unlock(&th_s->lift_d->dong_mutex);
+	th_s->right_d->state = 1;
+	th_s->right_d->last_used = (t.tv_sec * 1000) + (t.tv_usec / 1000)
+		- th_s->v->st_run;
+	pthread_mutex_unlock(&th_s->right_d->dong_mutex);
+	gettimeofday(&t, NULL);
 }
 
 void	*coder(void *args)
@@ -85,5 +87,3 @@ void	*coder(void *args)
 	pthread_mutex_unlock(&(th_s->st_mutex));
 	return (NULL);
 }
-
-

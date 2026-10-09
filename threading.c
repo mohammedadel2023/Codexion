@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 11:50:03 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 14:16:47 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,15 +52,11 @@ int	is_dongle_free(int coder, t_dongles *dongle, t_vars v)
 		pthread_mutex_unlock(&dongle->dongle_arr[sec_dong]->dong_mutex);
 		return (0);
 	}
-	pthread_mutex_unlock(&dongle->dongle_arr[coder]->dong_mutex);
-	pthread_mutex_unlock(&dongle->dongle_arr[sec_dong]->dong_mutex);
 	return (1);
 }
 
 void	lock_signal(t_tstate **th_s, t_dongles *dongle, int coder, int size)
 {
-	pthread_mutex_lock(&dongle->dongle_arr[coder]->dong_mutex);
-	pthread_mutex_lock(&dongle->dongle_arr[(coder + 1) % size]->dong_mutex);
 	dongle->dongle_arr[coder]->state = 0;
 	dongle->dongle_arr[(coder + 1) % size]->state = 0;
 	pthread_mutex_unlock(&dongle->dongle_arr[coder]->dong_mutex);
@@ -68,31 +64,27 @@ void	lock_signal(t_tstate **th_s, t_dongles *dongle, int coder, int size)
 	pthread_cond_signal(&th_s[coder]->cond);
 }
 
-void	signal(t_queue *myqu, t_dongles *dongle, t_tstate **th_s, int cooldown)
+void	signal_it(t_queue *myqu, t_dongles *dongle, t_tstate **th_s, int cooldown)
 {
-	int	coder;
+	int	qu_size;
 	int	size;
 	int	it;
+	int	proc;
 
-	it = 1;
+	proc = 0;
+	it = 0;
 	size = th_s[0]->v->number_of_coders;
-	coder = top(myqu) - 1;
-	if (coder == -2)
-		return ;
-	if (is_dongle_free(coder, dongle, *th_s[0]->v))
+	qu_size = myqu->els_num;
+	while (proc < qu_size)
 	{
-		pull(myqu);
-		lock_signal(th_s, dongle, coder, size);
-	}
-	while (it < myqu->els_num)
-	{
-		coder = myqu->qu[it]->coder_num - 1;
-		if (is_dongle_free(coder, dongle, *th_s[0]->v))
+		if (is_dongle_free(myqu->qu[it]->coder_num - 1, dongle, *th_s[it]->v))
 		{
-			remove_it(myqu, coder + 1);
-			lock_signal(th_s, dongle, coder, size);
+			remove_it(myqu, myqu->qu[it]->coder_num);
+			proc++;
+			lock_signal(th_s, dongle, myqu->qu[it]->coder_num - 1, size);
 		}
-		it++;
+		else
+			it++;
 	}
 }
 
@@ -116,7 +108,7 @@ void	*thread_monitor(void *args)
 			}
 			it++;
 		}
-		signal(m_args->myqu, m_args->dongle, m_args->th_s,
+		signal_it(m_args->myqu, m_args->dongle, m_args->th_s,
 			m_args->v.dongle_cooldown);
 	}
 	while (is_live(m_args->th_s, 0, m_args->v))

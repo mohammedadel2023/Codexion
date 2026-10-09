@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 16:56:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 11:55:13 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 14:06:01 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,11 @@ int	swap_q_el(t_queue *myqu, int index, int smallest)
 	return (smallest);
 }
 
-int	heapify_down(t_queue *myqu, int index)
+void	heapify_down(t_queue *myqu, int index)
 {
 	int			smallest;
 	int			left;
 	int			right;
-	t_queue_el	*buffer;
 
 	smallest = index;
 	while (1)
