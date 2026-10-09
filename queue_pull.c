@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 16:56:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/08 15:33:32 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 10:06:36 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	get_top(t_queue *myqu)
 	free(myqu->qu[0]);
 	if (myqu->els_num == 1)
 	{
-		myqu->qu[0] == NULL;
+		myqu->qu[0] = NULL;
 		myqu->els_num--;
 	}
 	else
@@ -102,8 +102,10 @@ int remove_it(t_queue *myqu, int coder)
 		{
 			myqu->qu[it] = myqu->qu[myqu->els_num - 1];
 			myqu->qu[myqu->els_num - 1] = NULL;
+			myqu->els_num--;
 			heapify_down(myqu, it);
 			return (0);
 		}
+		it++;
 	}
 }

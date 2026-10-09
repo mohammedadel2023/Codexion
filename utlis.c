@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 14:16:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/08 15:01:52 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 11:41:02 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,6 @@ int	is_live(t_tstate **th_s, int state, t_vars v)
 	return (0);
 }
 
-t_vars	*copy(t_vars *v)
-{
-	t_vars	*new_v;
-
-	new_v = malloc(sizeof(struct vars));
-	*new_v = *v;
-	return (new_v);
-}
-
 int	free_thread(t_tstate **th_s)
 {
 	int	it;
@@ -52,7 +43,6 @@ int	free_thread(t_tstate **th_s)
 	{
 		pthread_mutex_destroy(&th_s[it - 1]->st_mutex);
 		pthread_cond_destroy(&(th_s[it - 1]->cond));
-		free(th_s[it - 1]->v);
 		free(th_s[it - 1]);
 		it--;
 	}

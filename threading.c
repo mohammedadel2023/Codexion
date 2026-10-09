@@ -6,57 +6,94 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/08 17:16:40 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 11:40:42 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-int	is_dongle_free(int coder, t_dongles *dongle, int size)
+int	is_free_dong(t_dongles *dongle, int coder, t_vars v)
 {
-	if (dongle->dongle_arr[coder]->state)
-		printf("array is exist\n");
-	if ((dongle->dongle_arr[coder]->state)
-		&& dongle->dongle_arr[(coder + 1) % size]->state)
-		return (1);
-	return (0);
+	struct timeval	t;
+	time_t			time;
+	time_t			cooldown;
+	int				size;
+	int				sec_dong;
+
+	cooldown = v.dongle_cooldown;
+	size = v.number_of_coders;
+	sec_dong = (coder + 1) % size;
+	if (gettimeofday(&t, NULL) != 0)
+		return (0);
+	time = (t.tv_sec * 1000) + (t.tv_usec / 1000) - v.st_run;
+	if (((time - dongle->dongle_arr[coder]->last_used) < cooldown)
+		|| ((time - dongle->dongle_arr[sec_dong]->last_used) < cooldown))
+		return (0);
+	if ((dongle->dongle_arr[coder]->state != 1)
+		|| dongle->dongle_arr[sec_dong]->state != 1)
+		return (0);
+	return (1);
 }
 
-void	signal(t_queue *myqu, t_dongles *dongle, t_tstate **th_s)
+int	is_dongle_free(int coder, t_dongles *dongle, t_vars v)
+{
+	int	sec_dong;
+	int	size;
+	int	cooldown;
+
+	cooldown = v.dongle_cooldown;
+	size = v.number_of_coders;
+	sec_dong = (coder + 1) % size;
+	pthread_mutex_lock(&dongle->dongle_arr[coder]->dong_mutex);
+	pthread_mutex_lock(&dongle->dongle_arr[sec_dong]->dong_mutex);
+	if (is_free_dong(dongle, coder, v) == 0)
+	{
+		pthread_mutex_unlock(&dongle->dongle_arr[coder]->dong_mutex);
+		pthread_mutex_unlock(&dongle->dongle_arr[sec_dong]->dong_mutex);
+		return (0);
+	}
+	pthread_mutex_unlock(&dongle->dongle_arr[coder]->dong_mutex);
+	pthread_mutex_unlock(&dongle->dongle_arr[sec_dong]->dong_mutex);
+	return (1);
+}
+
+void	lock_signal(t_tstate **th_s, t_dongles *dongle, int coder, int size)
+{
+	pthread_mutex_lock(&dongle->dongle_arr[coder]->dong_mutex);
+	pthread_mutex_lock(&dongle->dongle_arr[(coder + 1) % size]->dong_mutex);
+	dongle->dongle_arr[coder]->state = 0;
+	dongle->dongle_arr[(coder + 1) % size]->state = 0;
+	pthread_mutex_unlock(&dongle->dongle_arr[coder]->dong_mutex);
+	pthread_mutex_unlock(&dongle->dongle_arr[(coder + 1) % size]->dong_mutex);
+	pthread_cond_signal(&th_s[coder]->cond);
+}
+
+void	signal(t_queue *myqu, t_dongles *dongle, t_tstate **th_s, int cooldown)
 {
 	int	coder;
 	int	size;
 	int	it;
 
-	printf("inside signal\n");
 	it = 1;
 	size = th_s[0]->v->number_of_coders;
-	coder = top(myqu);
-	if (coder == -1)
-		return;
-	if (is_dongle_free(coder, dongle,
-		size));
+	coder = top(myqu) - 1;
+	if (coder == -2)
+		return ;
+	if (is_dongle_free(coder, dongle, *th_s[0]->v))
 	{
-		printf("inside top\n");
-		dongle->dongle_arr[coder]->state = 0;
-		dongle->dongle_arr[(coder + 1) % size]->state = 0;
-		pthread_cond_signal(&th_s[coder - 1]->cond);
-		//return;
+		pull(myqu);
+		lock_signal(th_s, dongle, coder, size);
 	}
 	while (it < myqu->els_num)
 	{
-		coder = myqu->qu[it]->coder_num;
-		if (is_dongle_free(coder, dongle, size))
+		coder = myqu->qu[it]->coder_num - 1;
+		if (is_dongle_free(coder, dongle, *th_s[0]->v))
 		{
-			dongle->dongle_arr[coder]->state = 0;
-			dongle->dongle_arr[(coder + 1) % size]->state = 0;
-			printf("inside remove\n");
-			remove_it(myqu, coder);
-			pthread_cond_signal(&th_s[coder]->cond);
-			//return;
+			remove_it(myqu, coder + 1);
+			lock_signal(th_s, dongle, coder, size);
 		}
+		it++;
 	}
-	
 }
 
 void	*thread_monitor(void *args)
@@ -64,32 +101,27 @@ void	*thread_monitor(void *args)
 	int				it;
 	struct timeval	t;
 	t_monitor_args	*m_args;
+	int				stop;
 
 	m_args = (t_monitor_args *)args;
-	while (is_live(m_args->th_s, 1, m_args->v)
+	while ((is_live(m_args->th_s, 1, m_args->v)
 			|| is_live(m_args->th_s, 2, m_args->v))
+		&& m_args->v.sim_state)
 	{
 		it = 0;
-		//printf("looping on all thraeds\n");
 		while (it < (m_args->th_s[0]->v->number_of_coders))
 		{
 			if (gettimeofday(&t, NULL) == 0 && m_args->th_s[it]->is_alive != 0)
 			{
-				printf("enter the func which have burnout\n");
-				//usleep(100);
 				is_burnout(t.tv_sec, m_args->th_s[it], m_args->myqu);
-				printf("out step and the coder is [%i]\n", m_args->th_s[it]->coder_num);
 			}
-			//printf("the cond is [%i] for coder [%i]\n", gettimeofday(&t, NULL) == 0 && m_args->th_s[it]->is_alive == 1,  m_args->th_s[it]->coder_num);
 			it++;
 		}
-		printf("signal\n");
-		signal(m_args->myqu, m_args->dongle, m_args->th_s);
+		signal(m_args->myqu, m_args->dongle, m_args->th_s,
+			m_args->v.dongle_cooldown);
 	}
-	printf("finish the loop\n");
-	while (is_live(m_args->th_s, 0, m_args->v))
+	while (is_live(m_args->th_s, 0, m_args->v) && stop != 1)
 		usleep(1);
-	printf("monitor thread stoped\n");
 	frees(&m_args);
 	return (NULL);
 }
@@ -107,7 +139,7 @@ void	assign_dongles(t_tstate **th_s, t_dongles *dongle, t_vars v)
 	}
 }
 
-t_call_res	*call_coders(t_vars v)
+t_call_res	*call_coders(t_vars *v)
 {
 	pthread_t	*ths;
 	t_tstate	**th_s;
@@ -115,18 +147,18 @@ t_call_res	*call_coders(t_vars v)
 	t_dongles	*dongle;
 	t_call_res	*call_res;
 
-	allocation(&ths, &th_s, v.number_of_coders);
+	allocation(&ths, &th_s, v->number_of_coders);
 	initiated_coder = 0;
-	while (initiated_coder < v.number_of_coders)
+	while (initiated_coder < v->number_of_coders)
 	{
-		creat_thread(&v, initiated_coder + 1, th_s[initiated_coder]);
+		creat_thread(v, initiated_coder + 1, th_s[initiated_coder]);
 		if (!th_s[initiated_coder] || pthread_create(&ths[initiated_coder],
 				NULL, &coder, (void *)th_s[initiated_coder]) != 0)
 			return (NULL);
 		initiated_coder++;
 	}
-	dongle = create_dongles(v.number_of_coders, v);
-	assign_dongles(th_s, dongle, v);
+	dongle = create_dongles(v->number_of_coders, *v);
+	assign_dongles(th_s, dongle, *v);
 	call_res = malloc(sizeof(t_call_res));
 	if (!call_res)
 		return (NULL);
@@ -146,7 +178,7 @@ int	thread_init(t_vars *vars)
 	int				it;
 
 	it = 0;
-	call_res = call_coders(*vars);
+	call_res = call_coders(vars);
 	if (!call_res)
 		return (7);
 	if (monitor_args_init(&m_args, &call_res->th_s, *vars) == -1)

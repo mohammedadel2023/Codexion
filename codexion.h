@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/08 15:01:26 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 11:25:33 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct dongle_state
 {
 	int				state;
 	pthread_mutex_t	dong_mutex;
+	time_t			last_used;
 }	t_dongle_s;
 
 typedef struct vars
@@ -40,6 +41,7 @@ typedef struct vars
 	time_t		dongle_cooldown;
 	t_policy	scheduler;
 	time_t		st_run;
+	int			sim_state;
 }	t_vars;
 
 typedef struct dongle
@@ -103,7 +105,7 @@ t_vars		*copy(t_vars *v);
 int			creat_thread(t_vars *v, int num, t_tstate *th_s);
 int			allocation(pthread_t **ths, t_tstate ***th_s, int coders);
 t_dongles	*create_dongles(int size, t_vars v);
-void	free_dongle(t_dongles *dongle, int size);
+void		free_dongle(t_dongles *dongle, int size);
 
 void		*coder(void *args);
 void		is_burnout(time_t time, t_tstate *th_s, t_queue *myqu);

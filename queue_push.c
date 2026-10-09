@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 17:13:38 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/06 16:35:58 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 09:50:16 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	push(t_tstate *th_s, t_policy policy, t_queue	*myqu)
 
 	if (!myqu || !th_s || !policy)
 		return (-1);
-	q_el = malloc(sizeof(t_queue));
+	q_el = malloc(sizeof(t_queue_el));
 	if (!q_el)
 		return (-1);
 	if (policy == fifo)
