@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:07:04 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 18:22:33 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 18:43:23 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ void *coder(void *args)
 		if (gettimeofday(&t, NULL) != 0 || *th_s->v->sim_state != 1)
 		{
 			pthread_mutex_unlock(&th_s->st_mutex);
+			th_s->is_alive = -1;
 			return (NULL);
 		}
 		th_s->st_time = (t.tv_sec * 1000) + t.tv_usec / 1000 - th_s->v->st_run;

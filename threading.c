@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 18:28:53 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 18:45:13 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,17 +61,18 @@ void	lock_signal(t_tstate **th_s, t_dongles *dongle, int coder, int size)
 	dongle->dongle_arr[(coder + 1) % size]->state = 0;
 	pthread_mutex_unlock(&dongle->dongle_arr[coder]->dong_mutex);
 	pthread_mutex_unlock(&dongle->dongle_arr[(coder + 1) % size]->dong_mutex);
-	printf(">>> MONITOR signaling coder %d (dongles %d and %d)\n", coder + 1, coder, (coder + 1) % size);
 	pthread_cond_signal(&th_s[coder]->cond);
 }
 
-void signal_it(t_queue *myqu, t_dongles *dongle, t_tstate **th_s, int cooldown)
+void	signal_it(t_queue *myqu, t_dongles *dongle,
+		t_tstate **th_s, int cooldown)
 {
-	int qu_size;
-	int size;
-	int it;
-	int proc;
-	int coder_idx;
+	int	qu_size;
+	int	size;
+	int	it;
+	int	proc;
+	int	coder_idx;
+
 	proc = 0;
 	it = 0;
 	size = th_s[0]->v->number_of_coders;
@@ -99,7 +100,7 @@ void	*thread_monitor(void *args)
 	m_args = (t_monitor_args *)args;
 	while ((is_live(m_args->th_s, 1, m_args->v)
 			|| is_live(m_args->th_s, 2, m_args->v))
-		&& m_args->v->sim_state)
+		&& *m_args->v->sim_state)
 	{
 		it = 0;
 		while (it < (m_args->th_s[0]->v->number_of_coders))
