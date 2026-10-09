@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 14:56:51 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 15:07:36 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,24 +65,25 @@ void	lock_signal(t_tstate **th_s, t_dongles *dongle, int coder, int size)
 	pthread_cond_signal(&th_s[coder]->cond);
 }
 
-void	signal_it(t_queue *myqu, t_dongles *dongle, t_tstate **th_s, int cooldown)
+void signal_it(t_queue *myqu, t_dongles *dongle, t_tstate **th_s, int cooldown)
 {
-	int	qu_size;
-	int	size;
-	int	it;
-	int	proc;
-
+	int qu_size;
+	int size;
+	int it;
+	int proc;
+	int coder_idx;
 	proc = 0;
 	it = 0;
 	size = th_s[0]->v->number_of_coders;
 	qu_size = myqu->els_num;
-	while (proc < qu_size)
+	while (proc < qu_size && it < myqu->els_num)
 	{
-		if (is_dongle_free(myqu->qu[it]->coder_num - 1, dongle, *th_s[it]->v))
+		coder_idx = myqu->qu[it]->coder_num - 1;
+		if (is_dongle_free(coder_idx, dongle, *th_s[0]->v))
 		{
-			remove_it(myqu, myqu->qu[it]->coder_num);
+			remove_it(myqu, coder_idx + 1);
 			proc++;
-			lock_signal(th_s, dongle, myqu->qu[it]->coder_num - 1, size);
+			lock_signal(th_s, dongle, coder_idx, size);
 		}
 		else
 			it++;
