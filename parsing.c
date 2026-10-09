@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:12:29 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/08 14:58:26 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/09 14:26:28 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,16 +78,16 @@ int	parser(int argc, char **argv, t_vars *v)
 	{
 		if (it == 1 && get_number_val(argv[it]) != -1)
 			(*v).number_of_coders = get_number_val(argv[it]);
-		else if (it == 2 && get_number_val(argv[it]) != -1)
-			(*v).time_to_burnout = get_number_val(argv[it]);
+		else if (it == 2 && get_time_val(argv[it]) != -1)
+			(*v).time_to_burnout = get_time_val(argv[it]);
 		else if (it == 3 && get_time_val(argv[it]) != -1)
 			(*v).time_to_compile = get_time_val(argv[it]);
 		else if (it == 4 && get_time_val(argv[it]) != -1)
 			(*v).time_to_debug = get_time_val(argv[it]);
 		else if (it == 5 && get_time_val(argv[it]) != -1)
 			(*v).time_to_refactor = get_time_val(argv[it]);
-		else if (it == 6 && get_time_val(argv[it]) != -1)
-			(*v).number_of_compiles_required = get_time_val(argv[it]);
+		else if (it == 6 && get_number_val(argv[it]) != -1)
+			(*v).number_of_compiles_required = get_number_val(argv[it]);
 		else if (it == 7 && get_time_val(argv[it]) != -1)
 			(*v).dongle_cooldown = get_time_val(argv[it]);
 		else if (it == 8 && get_policy_val(argv[it]) != -1)
