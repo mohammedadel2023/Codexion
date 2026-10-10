@@ -1,4 +1,4 @@
-NAME = Codexion
+NAME = codexion
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
@@ -15,7 +15,7 @@ $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 run:
-	./$(NAME) 5 300 100 100 100 3 10 edf
+	./$(NAME) 1 300 100 100 100 3 10 edf
 
 valgrind:
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./$(NAME) 5  1200  5  100  30  1  3  fifo
