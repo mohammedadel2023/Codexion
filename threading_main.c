@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/10 11:58:39 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/10 12:30:26 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/10 12:42:23 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void	*thread_monitor(void *args)
 			it++;
 		}
 		signal_it(m_args->myqu, m_args->dongle, m_args->th_s);
+		usleep(500);
 	}
 	unfinished_triger(m_args);
 	while (is_live(m_args->th_s, 0, m_args->v))
