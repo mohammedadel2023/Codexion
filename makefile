@@ -1,10 +1,31 @@
-compile:
-	cc -g main.c parsing.c threading.c threading_utlis.c threading_main.c utlis.c coder.c queue_utlis.c queue_push.c queue_pull.c -o mm
-run:
-	./mm 5 500 100 100 100 3 10 edf
-clean:
-	rm mm
-	rm *.o
+NAME = Codexion
+CC = cc
+CFLAGS = -Wall -Wextra -Werror
 
-valgrind: mm
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./mm 5  1200  5  100  30  1  3  fifo
+SRCS = coder.c main.c parsing.c queue_pull.c queue_push.c queue_utlis.c threading_main.c threading_utlis.c threading.c utlis.c
+
+OBJS = $(SRCS:.c=.o)
+
+all: $(NAME)
+
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+run:
+	./$(NAME) 5 500 100 100 100 3 10 edf
+
+valgrind:
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./$(NAME) 5  1200  5  100  30  1  3  fifo
+
+clean:
+	rm -f $(OBJS)
+
+fclean: clean
+	rm -f $(NAME)
+
+re: fclean all
+
+.PHONY: all clean fclean re

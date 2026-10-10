@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 16:56:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/10 12:12:59 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/10 12:33:16 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ int	remove_it(t_queue *myqu, int coder)
 	{
 		if (myqu->qu[it]->coder_num == coder)
 		{
+			free(myqu->qu[it]);
 			myqu->qu[it] = myqu->qu[myqu->els_num - 1];
 			myqu->qu[myqu->els_num - 1] = NULL;
 			myqu->els_num--;

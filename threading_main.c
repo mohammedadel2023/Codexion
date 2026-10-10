@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/10 11:58:39 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/10 12:13:32 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/10 12:30:26 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,8 @@ int	thread_init(t_vars *vars)
 	pthread_join(monitor_th, NULL);
 	while (it < vars->number_of_coders)
 		pthread_join(call_res->ths[it++], NULL);
+	free(call_res->ths);
+	free(call_res);
 	frees(&m_args);
 	return (1);
 }

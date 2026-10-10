@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 14:16:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/10 12:13:26 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/10 12:27:58 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ void	frees(t_monitor_args **m_args)
 	free_queue((*m_args)->myqu);
 	free_dongle((*m_args)->dongle, (*m_args)->v->number_of_coders);
 	free_thread((*m_args)->th_s);
+	free((*m_args)->v->sim_state);
 	free((*m_args)->v);
 	free(*m_args);
 }
