@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 16:56:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 14:06:01 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/10 12:12:59 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,25 +68,7 @@ int	get_top(t_queue *myqu)
 	return (top_coder);
 }
 
-int	pull(t_queue *myqu)
-{
-	if (!myqu)
-		return (-1);
-	if (!(myqu->els_num > 0))
-		return (-2);
-	return (get_top(myqu));
-}
-
-int	top(t_queue *myqu)
-{
-	if (!myqu)
-		return (-2);
-	if (myqu->els_num == 0)
-		return (-1);
-	return (myqu->qu[0]->coder_num);
-}
-
-int remove_it(t_queue *myqu, int coder)
+int	remove_it(t_queue *myqu, int coder)
 {
 	int	it;
 

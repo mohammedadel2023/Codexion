@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:12:29 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 14:26:28 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/10 12:20:54 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,15 +66,11 @@ t_policy	get_policy_val(char *str)
 int	parser(int argc, char **argv, t_vars *v)
 {
 	int		it;
-	char	*str;
 
-	it = 1;
+	it = 0;
 	if (argc != 9)
-	{
-		printf("Args issue check your args\n");
 		return (1);
-	}
-	while (it < argc)
+	while (++it < argc)
 	{
 		if (it == 1 && get_number_val(argv[it]) != -1)
 			(*v).number_of_coders = get_number_val(argv[it]);
@@ -90,20 +86,8 @@ int	parser(int argc, char **argv, t_vars *v)
 			(*v).number_of_compiles_required = get_number_val(argv[it]);
 		else if (it == 7 && get_time_val(argv[it]) != -1)
 			(*v).dongle_cooldown = get_time_val(argv[it]);
-		else if (it == 8 && get_policy_val(argv[it]) != -1)
+		else if (it == 8 && get_policy_val(argv[it]) != (fifo | edf))
 			(*v).scheduler = get_policy_val(argv[it]);
-		else
-		{
-			printf("Undefined arg '%s'.\n", argv[it]);
-			return (2);
-		}
-		it++;
 	}
-	if (v->number_of_coders < 1)
-	{
-		printf("Number os coders must be grater than 0.\n");
-		return (3);
-	}
-	v->st_run = get_start_time();
 	return (0);
 }

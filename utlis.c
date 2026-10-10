@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 14:16:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 18:20:19 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/10 12:13:26 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ int	is_live(t_tstate **th_s, int state, t_vars *v)
 	it = 0;
 	while (it < v->number_of_coders)
 	{
-
 		pthread_mutex_lock(&th_s[it]->st_mutex);
 		if (th_s[it]->is_alive == state)
 		{

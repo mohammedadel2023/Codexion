@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 17:13:38 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/09 11:55:43 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/10 12:11:06 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	heapify_up(t_queue *myqu)
 		index = swap_q_el(myqu, index, parent(index));
 }
 
-void	hide_push(t_queue *myqu, t_queue_el *q_el, t_policy policy)
+void	hide_push(t_queue *myqu, t_queue_el *q_el)
 {
 	myqu->qu[myqu->els_num - 1] = q_el;
 	if (myqu->els_num > 1)
@@ -45,7 +45,7 @@ int	push(t_tstate *th_s, t_policy policy, t_queue	*myqu)
 	q_el->coder_num = th_s->coder_num;
 	myqu->els_num++;
 	myqu->full_els_num++;
-	hide_push(myqu, q_el, policy);
+	hide_push(myqu, q_el);
 	return (0);
 }
 
@@ -56,7 +56,6 @@ void	free_queue(t_queue *myqu)
 
 	it = 0;
 	size = myqu->els_num;
-
 	while (it < size)
 	{
 		free(myqu->qu[it]);
