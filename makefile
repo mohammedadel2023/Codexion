@@ -1,6 +1,6 @@
 NAME = codexion
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -pthread
 
 SRCS = coder.c main.c parsing.c queue_pull.c queue_push.c queue_utlis.c threading_main.c threading_utlis.c threading.c utlis.c
 
@@ -14,11 +14,8 @@ $(NAME): $(OBJS)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-run:
-	./$(NAME) 5  3000  100  100  200  3  400  fifo
-
 valgrind:
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./$(NAME) 5  1200  5  100  30  1  3  fifo
+	valgrind --leak-check=full --show-leak-kinds=all --tool=helgrind  --track-origins=yes -s ./$(NAME) 5  1200  5  100  30  1  3  fifo
 
 clean:
 	rm -f $(OBJS)
@@ -28,4 +25,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re valgrind
