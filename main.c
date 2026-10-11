@@ -6,11 +6,35 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:11:51 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/10 14:00:48 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/11 14:37:23 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
+
+int	sub_parseing(t_vars *v, int argc, char **argv)
+{
+	int		it;
+
+	it = 1;
+	while (it < argc - 3)
+	{
+		if (it == 1 && get_number_val(argv[it]) != -1)
+			(*v).number_of_coders = get_number_val(argv[it]);
+		else if (it == 2 && get_time_val(argv[it]) != -1)
+			(*v).time_to_burnout = get_time_val(argv[it]);
+		else if (it == 3 && get_time_val(argv[it]) != -1)
+			(*v).time_to_compile = get_time_val(argv[it]);
+		else if (it == 4 && get_time_val(argv[it]) != -1)
+			(*v).time_to_debug = get_time_val(argv[it]);
+		else if (it == 5 && get_time_val(argv[it]) != -1)
+			(*v).time_to_refactor = get_time_val(argv[it]);
+		else
+			return (1);
+		it++;
+	}
+	return (0);
+}
 
 void	init_val(t_vars *v)
 {
@@ -27,7 +51,7 @@ void	do_one_case(time_t burnout, int coder_num)
 		return ;
 	}
 	printf("%ld %i has taken a dongle\n", (time_t)0, 1);
-	usleep(burnout);
+	usleep(burnout * 1000);
 	printf("%li %i burned out\n", burnout, 1);
 }
 
@@ -42,7 +66,7 @@ int	main(int argc, char **argv)
 	parse_res = parser(argc, argv, v);
 	if (parse_res == 1)
 	{
-		printf("there is extra or missing args.\n");
+		printf("args error\n");
 		free(v);
 		return (0);
 	}

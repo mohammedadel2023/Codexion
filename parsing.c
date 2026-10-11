@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:12:29 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/10 12:20:54 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/11 14:38:31 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,14 @@ int	get_number_val(char *str)
 	return (num);
 }
 
-t_policy	get_policy_val(char *str)
+int	get_policy_val(char *str)
 {
 	if (!str)
 		return (0);
 	if (strcmp(str, "fifo") == 0)
-		return (fifo);
+		return (0);
 	else if (strcmp(str, "edf") == 0)
-		return (edf);
+		return (0);
 	else
 		return (-1);
 }
@@ -67,27 +67,24 @@ int	parser(int argc, char **argv, t_vars *v)
 {
 	int		it;
 
-	it = 0;
+	it = 5;
 	if (argc != 9)
+		return (1);
+	if (sub_parseing(v, argc, argv) != 0)
 		return (1);
 	while (++it < argc)
 	{
-		if (it == 1 && get_number_val(argv[it]) != -1)
-			(*v).number_of_coders = get_number_val(argv[it]);
-		else if (it == 2 && get_time_val(argv[it]) != -1)
-			(*v).time_to_burnout = get_time_val(argv[it]);
-		else if (it == 3 && get_time_val(argv[it]) != -1)
-			(*v).time_to_compile = get_time_val(argv[it]);
-		else if (it == 4 && get_time_val(argv[it]) != -1)
-			(*v).time_to_debug = get_time_val(argv[it]);
-		else if (it == 5 && get_time_val(argv[it]) != -1)
-			(*v).time_to_refactor = get_time_val(argv[it]);
-		else if (it == 6 && get_number_val(argv[it]) != -1)
+		if (it == 6 && get_number_val(argv[it]) != -1)
 			(*v).number_of_compiles_required = get_number_val(argv[it]);
 		else if (it == 7 && get_time_val(argv[it]) != -1)
 			(*v).dongle_cooldown = get_time_val(argv[it]);
-		else if (it == 8 && get_policy_val(argv[it]) != (fifo | edf))
-			(*v).scheduler = get_policy_val(argv[it]);
+		else if (it == 8 && get_policy_val(argv[it]) == 0)
+			if (strcmp(argv[it], "fifo") == 0)
+				(*v).scheduler = fifo;
+			else
+				(*v).scheduler = edf;
+		else
+			return (1);
 	}
 	return (0);
 }

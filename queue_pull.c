@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 16:56:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/10 12:33:16 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/11 14:42:10 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@ void	heapify_down(t_queue *myqu, int index)
 		left = l_child(index);
 		right = r_child(index);
 		if (left < myqu->els_num && myqu->qu[left]->coder_wight
-			< myqu->qu[smallest]->coder_wight)
+			> myqu->qu[smallest]->coder_wight)
 			smallest = left;
 		if (right < myqu->els_num && myqu->qu[right]->coder_wight
-			< myqu->qu[smallest]->coder_wight)
+			> myqu->qu[smallest]->coder_wight)
 			smallest = right;
 		if (smallest != index)
 			index = swap_q_el(myqu, index, smallest);

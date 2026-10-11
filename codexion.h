@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/10 12:20:36 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/11 14:33:03 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,9 @@ typedef struct call_coder_res
 	pthread_t	*ths;
 }	t_call_res;
 
+time_t		get_time_val(char *str);
+int			get_number_val(char *str);
+int			sub_parseing(t_vars *v, int argc, char **argv);
 int			parser(int argc, char **argv, t_vars *v);
 time_t		get_start_time(void);
 
