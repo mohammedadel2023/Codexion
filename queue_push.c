@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 17:13:38 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/11 14:42:02 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/11 14:52:01 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	heapify_up(t_queue *myqu)
 
 	index = myqu->els_num - 1;
 	while (index != 0 && myqu->qu[index]->coder_wight
-		> myqu->qu[parent(index)]->coder_wight)
+		< myqu->qu[parent(index)]->coder_wight)
 		index = swap_q_el(myqu, index, parent(index));
 }
 
