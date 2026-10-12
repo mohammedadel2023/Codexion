@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/10 12:06:57 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/12 03:25:00 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,11 @@ int	is_dongle_free(int coder, t_dongles *dongle, t_vars v)
 		return (0);
 	size = v.number_of_coders;
 	sec_dong = (coder + 1) % size;
+	if (sec_dong == 0)
+		pthread_mutex_lock(&dongle->dongle_arr[sec_dong]->dong_mutex);
 	pthread_mutex_lock(&dongle->dongle_arr[coder]->dong_mutex);
-	pthread_mutex_lock(&dongle->dongle_arr[sec_dong]->dong_mutex);
+	if (sec_dong != 0)
+		pthread_mutex_lock(&dongle->dongle_arr[sec_dong]->dong_mutex);
 	if (is_free_dong(dongle, coder, v) == 0)
 	{
 		pthread_mutex_unlock(&dongle->dongle_arr[coder]->dong_mutex);
@@ -65,7 +68,7 @@ void	lock_signal(t_tstate **th_s, t_dongles *dongle, int coder, int size)
 }
 
 void	signal_it(t_queue *myqu, t_dongles *dongle,
-		t_tstate **th_s)
+			t_tstate **th_s)
 {
 	int	qu_size;
 	int	size;
@@ -98,14 +101,13 @@ void	unfinished_triger(t_monitor_args *m_args)
 	it = 0;
 	while (it < m_args->v->number_of_coders)
 	{
+		pthread_mutex_lock(&m_args->th_s[it]->st_mutex);
 		if (m_args->th_s[it]->is_alive != -1)
 		{
 			m_args->th_s[it]->is_alive = 0;
-			pthread_mutex_lock(&m_args->th_s[it]->st_mutex);
-			m_args->th_s[it]->is_alive = 0;
 			pthread_cond_signal(&m_args->th_s[it]->cond);
-			pthread_mutex_unlock(&m_args->th_s[it]->st_mutex);
 		}
+		pthread_mutex_unlock(&m_args->th_s[it]->st_mutex);
 		it++;
 	}
 }

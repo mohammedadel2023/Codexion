@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   coder.c                                            :+:      :+:    :+:   */
+/*   coder.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 18:07:04 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/10 14:02:07 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/12 03:20:00 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,12 @@ void	coder_compile(t_tstate *th_s)
 	struct timeval	t;
 	time_t			now;
 
+	if (th_s->coder_num == th_s->v->number_of_coders)
+		pthread_mutex_lock(&th_s->right_d->dong_mutex);
 	pthread_mutex_lock(&th_s->lift_d->dong_mutex);
+	if (th_s->coder_num != th_s->v->number_of_coders)
+		pthread_mutex_lock(&th_s->right_d->dong_mutex);
 	printf("%ld %i has taken a dongle\n", th_s->st_time, th_s->coder_num);
-	pthread_mutex_lock(&th_s->right_d->dong_mutex);
 	printf("%ld %i has taken a dongle\n", th_s->st_time, th_s->coder_num);
 	th_s->lift_d->state = 0;
 	th_s->right_d->state = 0;
@@ -84,7 +87,6 @@ void	coder_op(t_tstate *th_s)
 			+ th_s->v->time_to_compile, th_s->coder_num);
 		usleep(th_s->v->time_to_refactor * 1000);
 	}
-	pthread_mutex_lock(&th_s->st_mutex);
 }
 
 void	*coder(void *args)
@@ -94,9 +96,8 @@ void	*coder(void *args)
 
 	th_s = (t_tstate *)args;
 	pthread_mutex_lock(&th_s->st_mutex);
-	while (th_s->is_alive != 0
-		&& th_s->compilation_times != th_s->v->number_of_compiles_required
-		&& *th_s->v->sim_state)
+	while (th_s->is_alive != 0 && th_s->compilation_times
+		!= th_s->v->number_of_compiles_required && *th_s->v->sim_state)
 	{
 		th_s->is_alive = 2;
 		while (th_s->is_alive == 2)
@@ -110,6 +111,7 @@ void	*coder(void *args)
 		th_s->st_time = (t.tv_sec * 1000) + t.tv_usec / 1000 - th_s->v->st_run;
 		pthread_mutex_unlock(&th_s->st_mutex);
 		coder_op(th_s);
+		pthread_mutex_lock(&th_s->st_mutex);
 	}
 	th_s->is_alive = -1;
 	pthread_mutex_unlock(&th_s->st_mutex);

@@ -14,8 +14,11 @@ $(NAME): $(OBJS)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-valgrind:
-	valgrind --leak-check=full --show-leak-kinds=all --tool=helgrind  --track-origins=yes -s ./$(NAME) 5  1200  5  100  30  1  3  fifo
+valgrind-mem: $(NAME)
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./$(NAME) $(ARGS)
+
+valgrind-thread: $(NAME)
+	valgrind --tool=helgrind -s ./$(NAME) $(ARGS)
 
 clean:
 	rm -f $(OBJS)
@@ -25,4 +28,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re valgrind
+.PHONY: all clean fclean re valgrind-mem valgrind-thread

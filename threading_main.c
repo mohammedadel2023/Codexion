@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/10 11:58:39 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/11 14:01:20 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/12 03:26:23 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	*thread_monitor(void *args)
 		it = 0;
 		while (it < (m_args->th_s[0]->v->number_of_coders))
 		{
-			if (gettimeofday(&t, NULL) == 0 && m_args->th_s[it]->is_alive != 0)
+			if (gettimeofday(&t, NULL) == 0)
 			{
 				is_burnout(t, m_args->th_s[it], m_args->myqu);
 			}
