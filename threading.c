@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/12 03:25:00 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/12 04:34:00 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,16 @@ int	is_dongle_free(int coder, t_dongles *dongle, t_vars v)
 		return (0);
 	size = v.number_of_coders;
 	sec_dong = (coder + 1) % size;
-	if (sec_dong == 0)
+	if (sec_dong < coder)
+	{
 		pthread_mutex_lock(&dongle->dongle_arr[sec_dong]->dong_mutex);
-	pthread_mutex_lock(&dongle->dongle_arr[coder]->dong_mutex);
-	if (sec_dong != 0)
+		pthread_mutex_lock(&dongle->dongle_arr[coder]->dong_mutex);
+	}
+	else
+	{
+		pthread_mutex_lock(&dongle->dongle_arr[coder]->dong_mutex);
 		pthread_mutex_lock(&dongle->dongle_arr[sec_dong]->dong_mutex);
+	}
 	if (is_free_dong(dongle, coder, v) == 0)
 	{
 		pthread_mutex_unlock(&dongle->dongle_arr[coder]->dong_mutex);
