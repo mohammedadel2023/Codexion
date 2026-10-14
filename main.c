@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:11:51 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/11 14:37:23 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/13 13:39:47 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ int	main(int argc, char **argv)
 		return (0);
 	}
 	init_val(v);
-	thread_init(v);
+	if (thread_init(v) != 0)
+		return (0);
 	return (0);
 }

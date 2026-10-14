@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 14:16:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/10 12:27:58 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/12 09:33:39 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ int	monitor_args_init(t_monitor_args **m_args, t_tstate ***th_s, t_vars *args)
 	(*m_args)->v = args;
 	(*m_args)->myqu = create_queue(args->number_of_coders);
 	(*m_args)->dongle = sub_create_dongle(*th_s, *args);
+	if (!((*m_args)->myqu) || !((*m_args)->dongle))
+		return (-1);
 	if (!(*m_args)->dongle)
 		return (-1);
 	return (0);

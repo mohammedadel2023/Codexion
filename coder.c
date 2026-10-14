@@ -34,7 +34,8 @@ void	is_burnout(struct timeval t, t_tstate *th_s, t_queue *myqu)
 	}
 	else if (th_s->is_alive == 2)
 	{
-		push(th_s, th_s->v->scheduler, myqu);
+		if (push(th_s, th_s->v->scheduler, myqu) == -1)
+			return ;
 		th_s->is_alive = 1;
 	}
 	pthread_mutex_unlock(&(th_s->st_mutex));

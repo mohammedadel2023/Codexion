@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/12 04:34:00 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/12 09:42:33 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	is_free_dong(t_dongles *dongle, int coder, t_vars v)
 	size = v.number_of_coders;
 	sec_dong = (coder + 1) % size;
 	if (gettimeofday(&t, NULL) != 0)
-		return (0);
+		return (-1);
 	time = (t.tv_sec * 1000) + (t.tv_usec / 1000) - v.st_run;
 	if (((time - dongle->dongle_arr[coder]->last_used) < cooldown)
 		|| ((time - dongle->dongle_arr[sec_dong]->last_used) < cooldown))
@@ -90,7 +90,8 @@ void	signal_it(t_queue *myqu, t_dongles *dongle,
 		coder_idx = myqu->qu[it]->coder_num - 1;
 		if (is_dongle_free(coder_idx, dongle, *th_s[0]->v))
 		{
-			remove_it(myqu, coder_idx + 1);
+			if (remove_it(myqu, coder_idx + 1) != 0)
+				return ;
 			proc++;
 			lock_signal(th_s, dongle, coder_idx, size);
 		}

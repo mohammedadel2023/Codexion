@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/10 11:58:39 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/12 03:26:23 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/13 13:42:48 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,8 @@ t_call_res	*call_coders(t_vars *v)
 	initiated_coder = 0;
 	while (initiated_coder < v->number_of_coders)
 	{
-		creat_thread(v, initiated_coder + 1, th_s[initiated_coder]);
+		if (creat_thread(v, initiated_coder + 1, th_s[initiated_coder]) != 0)
+			return (NULL);
 		if (!th_s[initiated_coder] || pthread_create(&ths[initiated_coder],
 				NULL, &coder, (void *)th_s[initiated_coder]) != 0)
 			return (NULL);
@@ -77,7 +78,7 @@ t_call_res	*call_coders(t_vars *v)
 	dongle = create_dongles(v->number_of_coders, *v);
 	assign_dongles(th_s, dongle, *v);
 	call_res = malloc(sizeof(t_call_res));
-	if (!call_res)
+	if (!call_res || !dongle)
 		return (NULL);
 	call_res->th_s = th_s;
 	call_res->ths = ths;

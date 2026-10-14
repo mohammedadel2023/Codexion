@@ -14,11 +14,11 @@ $(NAME): $(OBJS)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-valgrind-mem: $(NAME)
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./$(NAME) $(ARGS)
-
-valgrind-thread: $(NAME)
-	valgrind --tool=helgrind -s ./$(NAME) $(ARGS)
+# valgrind-mem: $(NAME)
+# 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./$(NAME) $(ARGS)
+# 
+# valgrind-thread: $(NAME)
+# 	valgrind --tool=helgrind -s ./$(NAME) $(ARGS)
 
 clean:
 	rm -f $(OBJS)
