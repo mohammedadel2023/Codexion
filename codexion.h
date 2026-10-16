@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/11 14:33:03 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/16 14:50:05 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef struct thread_state
 	time_t			st_time;
 	int				compilation_times;
 	int				is_alive;
+	int				is_queued;
 	int				coder_num;
 	pthread_mutex_t	st_mutex;
 	pthread_cond_t	cond;
@@ -74,6 +75,8 @@ typedef struct queue
 	t_queue_el	**qu;
 	int			els_num;
 	int			full_els_num;
+	int			*buffer;
+	int			buffer_eln;
 }	t_queue;
 
 typedef struct monitor_args
@@ -97,7 +100,9 @@ int			parser(int argc, char **argv, t_vars *v);
 time_t		get_start_time(void);
 
 int			thread_init(t_vars *vars);
+void		join_coders(pthread_t *ths, int coders);
 
+int			is_dongle_free(int coder, t_dongles *dongle, t_vars v);
 void		signal_it(t_queue *myqu, t_dongles *dongle,
 				t_tstate **th_s);
 void		unfinished_triger(t_monitor_args *m_args);
@@ -108,6 +113,7 @@ int			is_live(t_tstate **th_s, int state, t_vars *v);
 void		frees(t_monitor_args **m_args);
 int			free_thread(t_tstate **th_s);
 t_vars		*copy(t_vars *v);
+void		*thread_burnout_monitor(void *args);
 
 int			creat_thread(t_vars *v, int num, t_tstate *th_s);
 int			allocation(pthread_t **ths, t_tstate ***th_s, int coders);
@@ -115,9 +121,10 @@ t_dongles	*create_dongles(int size, t_vars v);
 void		free_dongle(t_dongles *dongle, int size);
 
 void		*coder(void *args);
-void		is_burnout(struct timeval t, t_tstate *th_s, t_queue *myqu);
+void		is_burnout(struct timeval t, t_tstate *th_s);
 
 t_queue		*create_queue(int size);
+void		enqueue_ready(t_queue *myqu, t_tstate **th_s, int size);
 int			calc_wight(t_tstate *th_s);
 int			l_child(int index);
 int			r_child(int index);
@@ -127,4 +134,5 @@ int			push(t_tstate *th_s, t_policy policy, t_queue	*queue);
 void		free_queue(t_queue *myqu);
 
 int			swap_q_el(t_queue *myqu, int index, int smallest);
-int			remove_it(t_queue *myqu, int coder);
+void		reset_buffer(t_queue *myqu, t_tstate **th_s);
+int			pull(t_queue *myqu, t_dongles *dongle, t_vars v);

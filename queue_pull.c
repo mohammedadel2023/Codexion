@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/04 16:56:35 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/14 21:06:35 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/16 17:06:13 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,48 +48,62 @@ void	heapify_down(t_queue *myqu, int index)
 	}
 }
 
-int	get_top(t_queue *myqu)
+int	pull(t_queue *myqu, t_dongles *dongle, t_vars v)
 {
 	int	top_coder;
 
+	if (!myqu || !dongle || !v.sim_state || myqu->els_num == 0
+		|| !myqu->buffer)
+		return (-1);
 	top_coder = myqu->qu[0]->coder_num;
 	free(myqu->qu[0]);
-	if (myqu->els_num == 1)
-	{
+	myqu->els_num--;
+	if (myqu->els_num == 0)
 		myqu->qu[0] = NULL;
-		myqu->els_num--;
-	}
 	else
 	{
-		myqu->qu[0] = myqu->qu[myqu->els_num - 1];
-		myqu->qu[myqu->els_num - 1] = NULL;
-		myqu->els_num--;
+		myqu->qu[0] = myqu->qu[myqu->els_num];
+		myqu->qu[myqu->els_num] = NULL;
 		heapify_down(myqu, 0);
+	}
+	if (is_dongle_free(top_coder - 1, dongle, v) != 1)
+	{
+		myqu->buffer[myqu->buffer_eln++] = top_coder;
+		return (-1 * top_coder);
 	}
 	return (top_coder);
 }
 
-int	remove_it(t_queue *myqu, int coder)
+void	enqueue_ready(t_queue *myqu, t_tstate **th_s, int size)
 {
 	int	it;
 
 	it = 0;
-	if (!myqu)
-		return (-2);
-	if (myqu->els_num == 0)
-		return (-1);
-	while (it < myqu->els_num)
+	while (it < size)
 	{
-		if (myqu->qu[it]->coder_num == coder)
-		{
-			free(myqu->qu[it]);
-			myqu->qu[it] = myqu->qu[myqu->els_num - 1];
-			myqu->qu[myqu->els_num - 1] = NULL;
-			myqu->els_num--;
-			heapify_down(myqu, it);
-			return (0);
-		}
+		pthread_mutex_lock(&th_s[it]->st_mutex);
+		if (th_s[it]->is_alive == 2 && !th_s[it]->is_queued
+			&& push(th_s[it], th_s[it]->v->scheduler, myqu) == 0)
+			th_s[it]->is_queued = 1;
+		pthread_mutex_unlock(&th_s[it]->st_mutex);
 		it++;
 	}
-	return (0);
+}
+
+void	reset_buffer(t_queue *myqu, t_tstate **th_s)
+{
+	int			it;
+	int			coder;
+	t_policy	policy;
+
+	policy = th_s[0]->v->scheduler;
+	it = 0;
+	while (it < myqu->buffer_eln)
+	{
+		coder = myqu->buffer[it];
+		push(th_s[coder - 1], policy, myqu);
+		myqu->buffer[it] = 0;
+		it++;
+	}
+	myqu->buffer_eln = 0;
 }

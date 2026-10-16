@@ -14,8 +14,6 @@
 
 void	*thread_monitor(void *args)
 {
-	int				it;
-	struct timeval	t;
 	t_monitor_args	*m_args;
 
 	m_args = (t_monitor_args *)args;
@@ -23,15 +21,8 @@ void	*thread_monitor(void *args)
 			|| is_live(m_args->th_s, 2, m_args->v))
 		&& *m_args->v->sim_state)
 	{
-		it = 0;
-		while (it < (m_args->th_s[0]->v->number_of_coders))
-		{
-			if (gettimeofday(&t, NULL) == 0)
-			{
-				is_burnout(t, m_args->th_s[it], m_args->myqu);
-			}
-			it++;
-		}
+		enqueue_ready(m_args->myqu, m_args->th_s,
+			m_args->v->number_of_coders);
 		signal_it(m_args->myqu, m_args->dongle, m_args->th_s);
 		usleep(500);
 	}
@@ -85,28 +76,52 @@ t_call_res	*call_coders(t_vars *v)
 	return (call_res);
 }
 
+void	coders_waiting(t_tstate **th_s, int coders)
+{
+	int	it;
+	int	waiting;
+
+	waiting = 0;
+	while (!waiting)
+	{
+		waiting = 1;
+		it = 0;
+		while (it < coders)
+		{
+			pthread_mutex_lock(&th_s[it]->st_mutex);
+			if (th_s[it]->is_alive != 2)
+				waiting = 0;
+			pthread_mutex_unlock(&th_s[it]->st_mutex);
+			it++;
+		}
+		if (!waiting)
+			usleep(100);
+	}
+}
+
 int	thread_init(t_vars *vars)
 {
 	pthread_t		monitor_th;
+	pthread_t		burnout_th;
 	t_call_res		*call_res;
 	t_monitor_args	*m_args;
-	int				it;
 
-	it = 0;
 	call_res = call_coders(vars);
 	if (!call_res)
 		return (7);
+	coders_waiting(call_res->th_s, vars->number_of_coders);
 	if (monitor_args_init(&m_args, &call_res->th_s, vars) == -1)
 	{
 		frees(&m_args);
 		return (6);
 	}
-	if (pthread_create(&monitor_th, NULL, &thread_monitor, (void *)m_args) != 0)
+	if (pthread_create(&burnout_th, NULL, thread_burnout_monitor, m_args) != 0)
 		return (5);
-	it = 0;
+	if (pthread_create(&monitor_th, NULL, thread_monitor, m_args) != 0)
+		return (5);
 	pthread_join(monitor_th, NULL);
-	while (it < vars->number_of_coders)
-		pthread_join(call_res->ths[it++], NULL);
+	pthread_join(burnout_th, NULL);
+	join_coders(call_res->ths, vars->number_of_coders);
 	free(call_res->ths);
 	free(call_res);
 	frees(&m_args);

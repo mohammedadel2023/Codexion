@@ -6,11 +6,19 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/03 17:13:38 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/16 14:12:24 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/16 17:21:39 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
+
+int	calc_wight(t_tstate *th_s)
+{
+	int	wight;
+
+	wight = th_s->st_time + th_s->v->time_to_burnout;
+	return (wight);
+}
 
 void	heapify_up(t_queue *myqu)
 {
@@ -62,5 +70,6 @@ void	free_queue(t_queue *myqu)
 		it++;
 	}
 	free(myqu->qu);
+	free(myqu->buffer);
 	free(myqu);
 }

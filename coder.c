@@ -12,33 +12,44 @@
 
 #include "codexion.h"
 
-void	is_burnout(struct timeval t, t_tstate *th_s, t_queue *myqu)
+void	is_burnout(struct timeval t, t_tstate *th_s)
 {
 	time_t	conv_time;
 
 	pthread_mutex_lock(&(th_s->st_mutex));
-	conv_time = (t.tv_sec * 1000) + (t.tv_usec / 1000)
-		- th_s->v->st_run;
-	if (th_s->is_alive == -1)
-	{
-		pthread_mutex_unlock(&(th_s->st_mutex));
-		return ;
-	}
-	if (conv_time - th_s->st_time
-		>= th_s->v->time_to_burnout)
+	conv_time = (t.tv_sec * 1000) + (t.tv_usec / 1000) - th_s->v->st_run;
+	if (conv_time - th_s->st_time >= th_s->v->time_to_burnout
+		&& th_s->is_alive != -1)
 	{
 		th_s->is_alive = 0;
 		if (*th_s->v->sim_state)
 			printf("%li %i burned out\n", conv_time, th_s->coder_num);
 		*th_s->v->sim_state = 0;
 	}
-	else if (th_s->is_alive == 2)
-	{
-		if (push(th_s, th_s->v->scheduler, myqu) == -1)
-			return ;
-		th_s->is_alive = 1;
-	}
 	pthread_mutex_unlock(&(th_s->st_mutex));
+}
+
+void	*thread_burnout_monitor(void *args)
+{
+	int				it;
+	struct timeval	t;
+	t_monitor_args	*m_args;
+
+	m_args = (t_monitor_args *)args;
+	while ((is_live(m_args->th_s, 1, m_args->v)
+			|| is_live(m_args->th_s, 2, m_args->v))
+		&& *m_args->v->sim_state)
+	{
+		it = 0;
+		while (it < m_args->v->number_of_coders)
+		{
+			if (gettimeofday(&t, NULL) == 0)
+				is_burnout(t, m_args->th_s[it]);
+			it++;
+		}
+		usleep(500);
+	}
+	return (NULL);
 }
 
 void	coder_compile(t_tstate *th_s)

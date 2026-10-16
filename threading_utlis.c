@@ -25,6 +25,7 @@ int	creat_thread(t_vars *v, int num, t_tstate *th_s)
 	th_s->st_time = (time->tv_sec * 1000) + time->tv_usec / 1000 - v->st_run;
 	th_s->compilation_times = 0;
 	th_s->is_alive = 1;
+	th_s->is_queued = 0;
 	th_s->coder_num = num;
 	if (pthread_cond_init(&(th_s->cond), NULL) != 0)
 		return (-2);

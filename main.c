@@ -43,6 +43,15 @@ void	init_val(t_vars *v)
 	v->st_run = get_start_time();
 }
 
+void	join_coders(pthread_t *ths, int coders)
+{
+	int	it;
+
+	it = 0;
+	while (it < coders)
+		pthread_join(ths[it++], NULL);
+}
+
 void	do_one_case(time_t burnout, int coder_num)
 {
 	if (coder_num != 1)

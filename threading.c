@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/16 14:11:57 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/16 17:03:34 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,11 @@ void	lock_signal(t_tstate **th_s, t_dongles *dongle, int coder, int size)
 	dongle->dongle_arr[(coder + 1) % size]->state = 0;
 	pthread_mutex_unlock(&dongle->dongle_arr[coder]->dong_mutex);
 	pthread_mutex_unlock(&dongle->dongle_arr[(coder + 1) % size]->dong_mutex);
+	pthread_mutex_lock(&th_s[coder]->st_mutex);
+	th_s[coder]->is_queued = 0;
+	th_s[coder]->is_alive = 1;
 	pthread_cond_signal(&th_s[coder]->cond);
+	pthread_mutex_unlock(&th_s[coder]->st_mutex);
 }
 
 void	signal_it(t_queue *myqu, t_dongles *dongle,
@@ -78,26 +82,19 @@ void	signal_it(t_queue *myqu, t_dongles *dongle,
 	int	qu_size;
 	int	size;
 	int	it;
-	int	proc;
-	int	coder_idx;
+	int	coder;
 
-	proc = 0;
 	it = 0;
 	size = th_s[0]->v->number_of_coders;
 	qu_size = myqu->els_num;
-	while (proc < qu_size)
+	while (it < qu_size)
 	{
-		coder_idx = myqu->qu[it]->coder_num - 1;
-		if (is_dongle_free(coder_idx, dongle, *th_s[0]->v))
-		{
-			if (remove_it(myqu, coder_idx + 1) != 0)
-				continue ;
-			lock_signal(th_s, dongle, coder_idx, size);
-		}
-		else
-			it++;
-		proc++;
+		coder = pull(myqu, dongle, *th_s[0]->v);
+		if (coder > 0)
+			lock_signal(th_s, dongle, coder - 1, size);
+		it++;
 	}
+	reset_buffer(myqu, th_s);
 }
 
 void	unfinished_triger(t_monitor_args *m_args)
