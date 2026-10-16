@@ -6,7 +6,7 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/01 09:44:03 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/12 09:42:33 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/16 14:11:57 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,18 +85,18 @@ void	signal_it(t_queue *myqu, t_dongles *dongle,
 	it = 0;
 	size = th_s[0]->v->number_of_coders;
 	qu_size = myqu->els_num;
-	while (proc < qu_size && it < myqu->els_num)
+	while (proc < qu_size)
 	{
 		coder_idx = myqu->qu[it]->coder_num - 1;
 		if (is_dongle_free(coder_idx, dongle, *th_s[0]->v))
 		{
 			if (remove_it(myqu, coder_idx + 1) != 0)
-				return ;
-			proc++;
+				continue ;
 			lock_signal(th_s, dongle, coder_idx, size);
 		}
 		else
 			it++;
+		proc++;
 	}
 }
 
