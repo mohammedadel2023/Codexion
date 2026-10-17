@@ -6,16 +6,19 @@
 /*   By: mkhashan <mkhashan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 23:10:53 by mkhashan          #+#    #+#             */
-/*   Updated: 2026/10/16 14:50:05 by mkhashan         ###   ########.fr       */
+/*   Updated: 2026/10/17 10:21:33 by mkhashan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <pthread.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/time.h>
-#include <unistd.h>
+#ifndef CODEXION_H
+# define CODEXION_H
+
+# include <pthread.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <sys/time.h>
+# include <unistd.h>
 
 typedef enum policy
 {
@@ -136,3 +139,5 @@ void		free_queue(t_queue *myqu);
 int			swap_q_el(t_queue *myqu, int index, int smallest);
 void		reset_buffer(t_queue *myqu, t_tstate **th_s);
 int			pull(t_queue *myqu, t_dongles *dongle, t_vars v);
+
+#endif
